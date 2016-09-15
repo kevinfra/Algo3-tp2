@@ -27,6 +27,7 @@
 *.exe
 *.out
 *.app
+tp2
 
 # Latex
 *.log
