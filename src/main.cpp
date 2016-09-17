@@ -7,6 +7,7 @@
 #include <string>
 #include <chrono>
 #include <random>
+#include <grafos.h>
 
 using namespace std;
 
@@ -47,6 +48,26 @@ int main(int argc, char *argv[]) {
 
 	if (numeroDeEjercicio == 1) {
 		if (!experimentos) {
+			int f, c, p;
+			cout << "Ingrese Filas, columnas y #paredes que pueden derribarse" << endl;
+			cin >> f;
+			cin >> c;
+			cin >> p;
+			cout << "ingresar en las siguientes " << f << " filas los chars '.' para indicar camino," << endl;
+			cout << "'#' para indicar pared, 'o' para inicio y 'x' para destino. El largo de las filas debe ser " << c << endl;
+			const int tamArray = c*f;
+			int matrizPlana[tamArray];
+			char paseOPared;
+			for (int i = 0; i < tamArray && (cin >> paseOPared); ++i) {
+				matrizPlana[i] = paseOPared;
+			}
+			vector< vector< Grafos::Nodos > > listaDeAd();
+			for (int indiceFilas = 0; indiceFilas < f; ++indiceFilas){
+				// switch indiceFilas:
+				
+				// listaDeAd[indiceFilas].push_back();
+			}
+
 
 		}
 		else {
