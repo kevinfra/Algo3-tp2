@@ -7,7 +7,7 @@
 #include <string>
 #include <chrono>
 #include <random>
-#include <grafosEj1.h>
+#include <grafos.h>
 #include <grafosEj3.h>
 
 using namespace std;

@@ -1,16 +1,16 @@
 #include <vector>
 #include <queue>
 
-namespace Ej1 {
-    class Grafo;
+namespace Grafos {
+    class ListaAdy;
 }
 
-class Grafo{
+class ListaAdy{
 
     public:
     int nodosTotales;
     std::vector< std::vector < int > > adyacencia;
-    Grafo(int n);  // Constructor
+    ListaAdy(int n);  // Constructor
     void agregarArista(int u, int v);
     int BFS(int s, int t);
 

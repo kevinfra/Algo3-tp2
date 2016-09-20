@@ -1,18 +1,16 @@
-#include <grafosEj1.h>
+#include <grafos.h>
 
-Grafo::Grafo(int n){
+ListaAdy::ListaAdy(int n){
     this->nodosTotales = n;
-    for (int i = 0; i < n; ++i){
-      std::vector<int> listaNodoI;
-      this->adyacencia.push_back(listaNodoI);
-    }
+    std::vector< std::vector < int > > listaAd(n);
+    this->adyacencia = listaAd;
 }
 
-void Grafo::agregarArista(int u, int v){
+void ListaAdy::agregarArista(int u, int v){
     this->adyacencia[u].push_back(v);
 }
 
-int Grafo::BFS(int s, int t){
+int ListaAdy::BFS(int s, int t){
   int res = -1;
   std::queue<int> cola;
   int distancias[this->nodosTotales];
