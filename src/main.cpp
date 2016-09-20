@@ -7,7 +7,8 @@
 #include <string>
 #include <chrono>
 #include <random>
-#include <grafos.h>
+#include <grafosEj1.h>
+#include <grafosEj3.h>
 
 using namespace std;
 
@@ -49,7 +50,7 @@ int main(int argc, char *argv[]) {
 	if (numeroDeEjercicio == 1) {
 		if (!experimentos) {
 			int f, c, p;
-			cout << "Ingrese Filas, columnas y #paredes que pueden derribarse" << endl;
+			cout << "Ingrese filas, columnas y #paredes que pueden derribarse" << endl;
 			cin >> f;
 			cin >> c;
 			cin >> p;
@@ -57,17 +58,11 @@ int main(int argc, char *argv[]) {
 			cout << "'#' para indicar pared, 'o' para inicio y 'x' para destino. El largo de las filas debe ser " << c << endl;
 			const int tamArray = c*f;
 			int matrizPlana[tamArray];
-			char paseOPared;
-			for (int i = 0; i < tamArray && (cin >> paseOPared); ++i) {
-				matrizPlana[i] = paseOPared;
+			char puntoOPared;
+			for (int i = 0; i < tamArray && (cin >> puntoOPared); ++i) {
+				matrizPlana[i] = puntoOPared;
 			}
-			vector< vector< Grafos::Nodos > > listaDeAd();
-			for (int indiceFilas = 0; indiceFilas < f; ++indiceFilas){
-				// switch indiceFilas:
-				
-				// listaDeAd[indiceFilas].push_back();
-			}
-
+			//Falta transformar entrada a grafo
 
 		}
 		else {
@@ -85,7 +80,24 @@ int main(int argc, char *argv[]) {
 	else if (numeroDeEjercicio == 3) {
 
 		if (!experimentos){
-
+			int n, m;
+			cout << "Ingrese la cantidad de estaciones y la cantidad de vias" << endl;
+			cin >> n;
+			cin >> m;
+			cout << "ingresar en las siguientes " << n << " filas los chars '.' para indicar camino," << endl;
+			cout << "'#' para indicar pared, 'o' para inicio y 'x' para destino. El largo de las filas debe ser " << m << endl;
+			const int tamArray = m*3;
+			int matrizPlana[tamArray];
+			int estacionODistancia;
+			for (int i = 0; i < tamArray && (cin >> estacionODistancia); ++i) {
+				matrizPlana[i] = estacionODistancia;
+			}
+			vector< vector< Ej3::Nodos > > listaDeAd();
+			for (int indiceColumnas = 0; indiceColumnas < m; ++indiceColumnas){
+				for (int indiceFilas = 0; indiceFilas < 3; ++indiceFilas){
+					
+				}
+			}
 		}
 		else{
 
