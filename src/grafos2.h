@@ -21,9 +21,9 @@ struct arista {
 	bool operator<(const arista a) const
 	{
 		if (costo != a.costo)
-			return costo > a.costo;
+			return costo < a.costo;
 		if (inicio != a.inicio)
-			return inicio > a.inicio;
-		return fin > a.fin;
+			return inicio < a.inicio;
+		return fin < a.fin;
 	}
 };

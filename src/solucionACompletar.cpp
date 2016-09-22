@@ -42,10 +42,10 @@ struct arista {
 	bool operator<(const arista a) const
 	{
 		if (costo != a.costo)
-			return costo > a.costo;
+			return costo < a.costo;
 		if (inicio != a.inicio)
-			return inicio > a.inicio;
-		return fin > a.fin;
+			return inicio < a.inicio;
+		return fin < a.fin;
 	}
 };
 
@@ -62,18 +62,14 @@ int main() {
 		aristas.push_back(a);
 	}
 	
-	sort(aristas.begin(), aristas.end()); // ordeno las aristas por peso de mayor a menor
-	int camaraMasCara = -1;
+	sort(aristas.begin(), aristas.end()); // ordeno las aristas por peso de menor a mayor
 	for (int i = 0; i < E; i++) {
 		arista a = aristas[i];
 		if (find(a.inicio) != find(a.fin)) {
-			costoTotal -= a.costo;
+			costoTotal += a.costo;
 			uni(a.inicio, a.fin);
 		} 
-		else if (camaraMasCara == -1) {
-			camaraMasCara = a.costo;
-		}
 	}
 	
-	cout << costoTotal << " " << camaraMasCara << endl;
+	cout << costoTotal << endl;
 }

@@ -1,19 +1,17 @@
 #include <vector>
+#include <queue>
 
 namespace Grafos {
-    class Nodos;
+    class ListaAdy;
 }
 
-class Nodos{
+class ListaAdy{
+
     public:
-        char color;
-        Nodos* antecesor;
-        bool esPared;
-        int paredesRotas;
-        int distanciaAlOrigen;
-        Nodos(bool esPared);
-        ~Nodos();
+    int nodosTotales;
+    std::vector< std::vector < int > > adyacencia;
+    ListaAdy(int n);  // Constructor
+    void agregarArista(int u, int v);
+    int BFS(int s, int t);
 
-
-    private:
 };

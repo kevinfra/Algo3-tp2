@@ -37,7 +37,7 @@ int main(int argc, char *argv[]) {
 		}
 	}
 	else {
-		cout << "Modo de uso: \n tp1 numeroDeEjercicio \n Opcional luego del numero de ejercicio: " << endl;
+		cout << "Modo de uso: \n tp2 numeroDeEjercicio \n Opcional luego del numero de ejercicio: " << endl;
 		cout << "   -exp para experimentos" << endl;
 		return -1;
 	}
@@ -49,7 +49,7 @@ int main(int argc, char *argv[]) {
 	if (numeroDeEjercicio == 1) {
 		if (!experimentos) {
 			int f, c, p;
-			cout << "Ingrese Filas, columnas y #paredes que pueden derribarse" << endl;
+			cout << "Ingrese filas, columnas y el numero de las paredes que pueden derribarse" << endl;
 			cin >> f;
 			cin >> c;
 			cin >> p;
@@ -57,17 +57,11 @@ int main(int argc, char *argv[]) {
 			cout << "'#' para indicar pared, 'o' para inicio y 'x' para destino. El largo de las filas debe ser " << c << endl;
 			const int tamArray = c*f;
 			int matrizPlana[tamArray];
-			char paseOPared;
-			for (int i = 0; i < tamArray && (cin >> paseOPared); ++i) {
-				matrizPlana[i] = paseOPared;
+			char puntoOPared;
+			for (int i = 0; i < tamArray && (cin >> puntoOPared); ++i) {
+				matrizPlana[i] = puntoOPared;
 			}
-			vector< vector< Grafos::Nodos > > listaDeAd();
-			for (int indiceFilas = 0; indiceFilas < f; ++indiceFilas){
-				// switch indiceFilas:
-				
-				// listaDeAd[indiceFilas].push_back();
-			}
-
+			//Falta transformar entrada a grafo
 
 		}
 		else {
@@ -77,28 +71,23 @@ int main(int argc, char *argv[]) {
 	else if (numeroDeEjercicio == 2) {
 		if (!experimentos) {
 			int f, c;
-			cout << "Ingrese Filas, columnas Kevin" << endl;
+			cout << "Ingrese Filas, columnas:" << endl;
 			cin >> f;
 			cin >> c;
-			cout << "ingresar en las siguientes " << f << " filas los chars '.' para indicar camino," << endl;
+			cout << "Ingresar en las siguientes " << f << " filas los chars '.' para indicar camino," << endl;
 			cout << "'#' para indicar pared indestructuble, un num natural para indicar esfuerzo para romper la pared. El largo de las filas debe ser " << c << endl;
-			int filasReal = f + 2;
-			int columnasReal = c + 2;
+			int filasReal = f;
+			int columnasReal = c;
 			char matriz[filasReal][columnasReal];
 			char caminoPared;
 			long long costoTotal = 0;
 
 			for (int i = 0; i < filasReal; ++i) { //Para este entonces, asumo que aquellas paredes indestructibles, seran pasadas como #.
 				for (int j = 0; j < columnasReal; ++j) {
-					if (j == 0 || i == 0 || j == filasReal - 1 || i == columnasReal - 1){
-						matriz[i][j] = '#';						
-					} else {
 						(cin >> caminoPared);	
-						matriz[i][j] = caminoPared;
-					}			
+						matriz[i][j] = caminoPared;			
 				}
 			}
-			
 
 			vector<arista> aristas;
 			for (int iFilas = 0; iFilas < filasReal; ++iFilas) {
@@ -106,16 +95,16 @@ int main(int argc, char *argv[]) {
 					if (matriz[iFilas][iColumnas] == '.') {	
 						if (matriz[iFilas][iColumnas + 1] != '#') {
 							arista a;
-							a.inicio = iColumnas;
-							a.fin = iColumnas + 1;
+							a.inicio = iFilas * columnasReal + iColumnas;
+							a.fin = iFilas * columnasReal + iColumnas + 1;
 							a.costo = 0;
 							aristas.push_back(a);
 						}
 
 						if (matriz[iFilas + 1][iColumnas] != '#') {
 							arista a;
-							a.inicio = iFilas;
-							a.fin = iFilas + 1;
+							a.inicio = iFilas * columnasReal + iColumnas;
+							a.fin = (iFilas + 1) * columnasReal + iColumnas;
 							a.costo = 0;
 							aristas.push_back(a);
 						}
@@ -125,16 +114,16 @@ int main(int argc, char *argv[]) {
 						bool puseNumero = false;
 						if (matriz[iFilas][iColumnas + 1] != '#' && !esNumero(matriz[iFilas][iColumnas + 1])) {
 							arista a;
-							a.inicio = iColumnas;
-							a.fin = iColumnas + 1;
+							a.inicio = iFilas * columnasReal + iColumnas;
+							a.fin = iFilas * columnasReal + iColumnas + 1;
 							a.costo = matriz[iFilas][iColumnas] - '0';
 							aristas.push_back(a);
 							puseNumero = true;
 						} 
 						if (matriz[iFilas + 1][iColumnas] != '#' && !esNumero(matriz[iFilas + 1][iColumnas])) {
 							arista a;
-							a.inicio = iFilas;
-							a.fin = iFilas + 1;
+							a.inicio = iFilas * columnasReal + iColumnas;
+							a.fin = (iFilas + 1) * columnasReal + iColumnas;
 							a.costo = 0;
 							if(!puseNumero)
 								a.costo = matriz[iFilas][iColumnas] - '0';
@@ -144,18 +133,30 @@ int main(int argc, char *argv[]) {
 				}
 			}
 
-			sort(aristas.begin(), aristas.end()); // ordeno las aristas por costo de mayor a menor
-			int camaraMasCara = -1;
+			int V;
+			cout << "La cantidad de vertices que tiene es: " << V << endl;
+			init(V);
+			vector<arista> solucion;
+			sort(aristas.begin(), aristas.end()); // ordeno las aristas por costo de menor a mayor
+			for (int i = 0; i < aristas.size(); ++i)
+			{
+				cout << "Arista" << i << ": " << "costo: " << aristas[i].costo << " inicio: " << aristas[i].inicio << " fin: " << aristas[i].fin << endl;
+			}
+
 			for (uint i = 0; i < aristas.size(); i++) {
 				arista a = aristas[i];
 				if (find(a.inicio) != find(a.fin)) {
-					costoTotal -= a.costo;
+					solucion.push_back(a);
 					uni(a.inicio, a.fin);
-				} 
-				else if (camaraMasCara == -1) {
-					camaraMasCara = a.costo;
 				}
 			}
+			int res = 0;
+			for (int i = 0; i < solucion.size(); ++i)
+			{
+				res += solucion[i].costo;
+			}
+
+			cout << res << endl;
 		}
 		else {
 		}
@@ -163,7 +164,24 @@ int main(int argc, char *argv[]) {
 	else if (numeroDeEjercicio == 3) {
 
 		if (!experimentos){
-
+			// int n, m;
+			// cout << "Ingrese la cantidad de estaciones y la cantidad de vias" << endl;
+			// cin >> n;
+			// cin >> m;
+			// cout << "ingresar en las siguientes " << n << " filas los chars '.' para indicar camino," << endl;
+			// cout << "'#' para indicar pared, 'o' para inicio y 'x' para destino. El largo de las filas debe ser " << m << endl;
+			// const int tamArray = m*3;
+			// int matrizPlana[tamArray];
+			// int estacionODistancia;
+			// for (int i = 0; i < tamArray && (cin >> estacionODistancia); ++i) {
+			// 	matrizPlana[i] = estacionODistancia;
+			// }
+			// vector< vector< Ej3::Nodos > > listaDeAd();
+			// for (int indiceColumnas = 0; indiceColumnas < m; ++indiceColumnas){
+			// 	for (int indiceFilas = 0; indiceFilas < 3; ++indiceFilas){
+					
+			// 	}
+			// }
 		}
 		else{
 
