@@ -21,16 +21,18 @@ int find(int x) {
 	if (padre[x] != x) {
 		padre[x] = find(padre[x]);
 	}
-	return x;
+	return padre[x];
 }
 
 void uni(int x, int y) {
+	x = find(x);
+	y = find(y);
 	// union es una palabra reservada en C++, por eso usamos "uni"
-	if (altura[x] > altura[y]) {
-		padre[y] = padre[x];
+	if (altura[x] < altura[y]) {
+		padre[x] = y;
 	}
 	else {
-		padre[x] = padre[y];
+		padre[y] = x;
 	}
 
 	if (altura[x] == altura[y])

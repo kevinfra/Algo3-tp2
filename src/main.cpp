@@ -80,7 +80,6 @@ int main(int argc, char *argv[]) {
 			int columnasReal = c;
 			char matriz[filasReal][columnasReal];
 			char caminoPared;
-			long long costoTotal = 0;
 
 			for (int i = 0; i < filasReal; ++i) { //Para este entonces, asumo que aquellas paredes indestructibles, seran pasadas como #.
 				for (int j = 0; j < columnasReal; ++j) {
@@ -133,30 +132,34 @@ int main(int argc, char *argv[]) {
 				}
 			}
 
-			int V;
-			cout << "La cantidad de vertices que tiene es: " << V << endl;
-			init(V);
-			vector<arista> solucion;
-			sort(aristas.begin(), aristas.end()); // ordeno las aristas por costo de menor a mayor
-			for (int i = 0; i < aristas.size(); ++i)
-			{
-				cout << "Arista" << i << ": " << "costo: " << aristas[i].costo << " inicio: " << aristas[i].inicio << " fin: " << aristas[i].fin << endl;
-			}
-
-			for (uint i = 0; i < aristas.size(); i++) {
-				arista a = aristas[i];
-				if (find(a.inicio) != find(a.fin)) {
-					solucion.push_back(a);
-					uni(a.inicio, a.fin);
-				}
-			}
 			int res = 0;
-			for (int i = 0; i < solucion.size(); ++i)
-			{
-				res += solucion[i].costo;
-			}
 
-			cout << res << endl;
+			if(aristas.size() == 0){
+				res = -1;
+				cout << res << endl;
+			}
+			else{
+				int V = f*c;
+				init(V);
+				vector<arista> solucion;
+				sort(aristas.begin(), aristas.end()); // ordeno las aristas por costo de menor a mayor
+
+
+				for (uint i = 0; i < aristas.size(); i++) {
+					arista a = aristas[i];
+					if (find(a.inicio) != find(a.fin)) {
+						solucion.push_back(a);
+						uni(a.inicio, a.fin);
+					}
+				}
+				
+				for (int i = 0; i < solucion.size(); ++i)
+				{
+					res += solucion[i].costo;
+				}
+
+				cout << res << endl;
+			}
 		}
 		else {
 		}
