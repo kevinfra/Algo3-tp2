@@ -13,18 +13,15 @@ ListAdy::ListAdy(int estaciones, int vias, vector<ABC> recorridos) {
 		t_node nodo;
 		nodo.first = get<1>(recorrido);
 		nodo.second = get<2>(recorrido);
-		agregarArista(nroNodo, nodo);
+		this->adyacencia[nroNodo].push_back(nodo);
 	}
 }
 
-void ListAdy::agregarArista(int nroNodo, t_node nodo) {
-    this->adyacencia[nroNodo].push_back(nodo);
-}
-    
 salida dijkstra() {
+	salida salida1;
     vector<int> distancias(this->N, INFINITO);
     distancias[0] = 0;
-    set< pair<int,int> > noVisitados; //lista ordenada de (prioridad, nroNodo)
+    set< pair<int,int>, Cmp > noVisitados; //lista ordenada de (prioridad, nroNodo)
     noVisitados.insert( {0, 0} );
         
     while (!noVisitados.empty()) {
@@ -48,5 +45,12 @@ salida dijkstra() {
             }
         }
     }
-    return INT_MAX;
+
+    
+    salida1.T = -1;
+    int distanciaFinal = distancias[(this->N) - 1];
+    if (distanciaFinal != INFINITO)
+    	salida1.T = distanciaFinal;
+
+    return salida;
 }
