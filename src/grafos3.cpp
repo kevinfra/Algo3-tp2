@@ -2,48 +2,55 @@
 
 using namespace std;
 
-ListAdy::ListAdy(int n) {
-    this->nodosTotales = n;
-    vector< vector < int > > listaAd(n);
-    this->adyacencia = listaAd;
-}
-
-void ListAdy::gregarArista(int nroNodo, t_node nodo) {
-    this->adyacencia[nroNodo].push_back(nodo);
-}
-
-
-
-salida ejercicio3 (int N, int M, vector<ABC> vias)
-{
-
-} 
-
-void dijkstra(grafo g, nodo s) {
-	vector<int> distancias;
-	for (int i = 0; i < g.cantVectores; ++i)
+ListAdy::ListAdy(int estaciones, int vias, vector<ABC> recorridos) {
+	this->N = estaciones;
+	this->M = vias;
+    this->adyacencia.resize(estaciones);
+	for (int i = 0; i < vias; ++i)
 	{
-		distancias.push_back(INFINITO);
+		ABC recorrido = recorridos[i];
+		int nroNodo = get<0>(recorrido);
+		t_node nodo;
+		nodo.first = get<1>(recorrido);
+		nodo.second = get<2>(recorrido);
+		this->adyacencia[nroNodo].push_back(nodo);
 	}
-	set< vector<int> , nodo> noVisitados;
-	while (v = g.vectores) {
-		if (v.nodo != s) {
-			noVisitados.add(v);
-		}
-	}
-	noVisitados.encolar((0, s));
-	dist[s] = 0;
+}
 
-	while (!noVisitados.empty()) {
-		p = noVisitados.extraerMin();
-		for (int i = 0; i < g.vecinos(p); ++i)
-		{
-			q = g.vecinos(p)[i];
+salida dijkstra() {
+	salida salida1;
+    vector<int> distancias(this->N, INFINITO);
+    distancias[0] = 0;
+    set< pair<int,int>, Cmp > noVisitados; //lista ordenada de (prioridad, nroNodo)
+    noVisitados.insert( {0, 0} );
+        
+    while (!noVisitados.empty()) {
+        int nroNodo = noVisitados.begin()->second;
+        if (nroNodo == (this->N) - 1) {
+        	return distancias[nroNodo];
+        }
 
-			if (distancias[q] > distancias[p] + costo(p, q)) {
-				distancias[q] = distancias[p] + costo(p, q);
-				noVisitados.actualizarPrio(q, distancias[q]);
-			}
-		}
-	}
+        noVisitados.erase(noVisitados.begin());
+
+        for (t_node vecino : this->adyacencia[nroNodo]) { //vecino = (nroNodo, peso)
+            if (distancias[vecino.first] > distancias[nroNodo] + vecino.second) {
+        		
+        		t_node nodoAnterior = { distancias[vecino.first], vecino.first };
+                noVisitados.erase(nodoAnterior);
+
+                distancias[vecino.first] = distancias[nroNodo] + vecino.second;
+
+                t_node nodoNuevo = { distancias[vecino.first], vecino.first };
+                noVisitados.insert(nodoNuevo);
+            }
+        }
+    }
+
+    
+    salida1.T = -1;
+    int distanciaFinal = distancias[(this->N) - 1];
+    if (distanciaFinal != INFINITO)
+    	salida1.T = distanciaFinal;
+
+    return salida;
 }
