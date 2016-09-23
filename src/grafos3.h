@@ -14,10 +14,13 @@ namespace Grafos {
 class ListAdy {
 
     public:
-	    ListAdy(int n);  // Constructor
-	    int nodosTotales;
-	    vector< vector < int > > adyacencia;
+	    ListAdy(int estaciones, int vias, vector<ABC> recorridos);  // Constructor
 	    void agregarArista(int nroNodo, t_node nodo);
+	    salida dijkstra();
+    private:
+    	int N;
+    	int M;
+    	vector< vector < int > > adyacencia;
 };
 
 typedef tuple<int, int, int> ABC; //Para llegar de A a B tarda C
