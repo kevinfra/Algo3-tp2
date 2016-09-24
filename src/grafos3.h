@@ -17,7 +17,7 @@ namespace grafos3 {
     {
         bool operator ()(const pair<int, int> &a, const pair<int, int> &b)
         {
-            return a.first < b.first;
+            return a.first < b.first && a.second != b.second;
         }
     };
 
