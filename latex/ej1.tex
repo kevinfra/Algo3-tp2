@@ -1,0 +1,174 @@
+\section{Ejercicio 1: Vamos a buscar la respuesta a P=NP!}
+    % 1. Describir detalladamente el problema a resolver dando ejemplos del mismo y sus soluciones.
+    \subsection{Descripción del problema}
+		\begin{figure}[ht]
+			\begin{center}
+				\includegraphics[width=0.5\columnwidth]{imagenes/expedicionistas.jpg}
+				\caption{Indiana Jones junto a un Canibal del grupo de exploración}
+			\end{center}
+		\end{figure}
+        Indiana Jones debe seguir un mapa que posiblemente lo lleve a encontrar la solución a P=NP. Para esto, lleva a un grupo de arquéologos compuesto por $A$ personas y le pide ayuda a un grupo de gente local de tamaño $C$ para poder llegar hasta su destino sin grandes problemas. Sin embargo, durante el camino se encuentran con un puente en mal estado en el que no podrán pasar más de dos personas a la vez. Sumado a eso, hay solo una linterna para todo el equipo, por lo que en cada cruce alguien debe volver con la linterna. Como si el problema del puente fuera poco, el grupo local es conocido por su canibalismo, así que no pueden quedar más caníbales que arqueólogos de alguno de los lados del puente.
+
+        La resolución del problema consiste en elaborar un programa que recibe como entrada el valor de $A$ y $C$, y luego las velocidades de cada arqueólogo ($a_0, ... , a_A$) y la de cada canibal ($c_0, ... , c_C$) y devuelve la velocidad mínima con la que se puede cruzar el puente.
+
+        Por ejemplo, si el programa recibe lo siguiente como entrada: \newline
+        \texttt{2} \texttt{1} \newline
+        \texttt{1} \texttt{2} \newline
+        \texttt{1}
+
+        La salida correcta sería: \newline
+        \texttt{4}
+
+    % 2. Explicar de forma clara, sencilla, estructurada y concisa, las ideas desarrolladas para la resolución del problema. Utilizar pseudocódigo y lenguaje coloquial (no código fuente). Justificar por qué el procedimiento resuelve efectivamente el problema.
+    \subsection{Solución propuesta}
+        La solución de este problema fue lograda considerando todos las formas de cruzar el puente suponiendo que de esa forma se pueda llegar a un final válido. Dado que el fin es cruzar de la forma más rápida, dejamos de lado quién va a cruzar el puente y nos enfocamos en a qué grupo pertenece. Siguiendo esta idea, siempre cruzarán los más rápidos de los que tengan la posibilidad de cruzar. Nos aseguramos de no perder casos en los que el cruce de alguien que no sea el más rápido nos lleve a una mejor solución basandonos el principio de optimalidad y en la idea de que todos deben cruzar el puente al menos una vez. El tiempo que les toma cruzar cada vez que pasan dos personas es la del más lento. Entonces, en el caso de que deba cruzar una sola persona, si hay dos del mismo grupo, será mejor que cruce el más rápido primero ya que en caso de tener que regresar, tendrá menos posibilidades de retrasar al acompañante. En el caso de que dos personas deban cruzar, podemos tomar la misma idea y cuando alguno deba volver a cruzar, deberá regresar el más rápido nuevamente para consumir la menor cantidad posible de tiempo (siempre y cuando cruce el del grupo que corresponda).
+
+        Solamente van a tener la chance de cruzar quienes estén del lado en que está en la linterna y que su cruce no lleve a un \emph{estado inválido}. Un estado válido es aquél en el que no se estuvo anteriormente (es decir, que sea una situación que no haya ocurrido con anterioridad) y que no deje a más caníbales que arqueólogos de alguno de los dos lados. Si bien lo mejor es que crucen siempre los más rápidos, esto no siempre será posible. Es por esto, que los que crucen el puente serán los más rápidos de todas las combinaciones posibles entre los dos grupos siendo un cruce de 1 o 2 personas. Luego, los posibles cruces serán 2 personas del mismo grupo, 1 de un grupo y 1 de otro, o 1 sola de alguno de los dos grupos. Aquí es donde entra la importancia del estado inválido. La forma de corroborar que el movimiento lleve a un estádo válido es observando la cantidad de personas pertenecientes a cada uno de los grupos en cada lado del puente, sin importar su velocidad.
+
+        La razón de esto es que es lo mismo si los que están en algún lado del puente son los que poseen velocidad $a_1$ o $a_2$ ya que simplemente sería una permutación de éstos. A pesar de que esto puede impactar en el tiempo total del cruce del puente, el objetivo de probar con todos los caminos y obtener todos las \emph{soluciones válidas} hace que luego no sea importante quién está de cada lado.
+
+        Para que una solución al problema sea válida, el tiempo que tome cruzar el puente debe ser mayor o igual a la suma de las velocidades de los todos los exploradores (caníbales y arqueólogos) y además en ningún momento del recorrido deben haber estados inválidos. Además, se pide que la solución final sea el menor tiempo posible que tome cruzar el puente. Este mismo será el mínimo entre todas las soluciones válidas.
+
+        Teniendo en cuenta lo planteado en este informe sobre el problema, podemos marcar que el algoritmo realizado, fue construido en base a la técnica de \emph{backtracking} que al igual que en este caso, consiste en probar todas las posibilidades descartando la mayor cantidad de soluciones incorrectas posibles al mismo tiempo y dejando como resultado una lista con las soluciones válidas. Así, se prueban todos los caminos posibles para cruzar el puente y al final se obtiene una lista con todas los tiempos que puede tomar cruzar el puente.
+
+        Los casos base de la recursión son triviales, ya que resultan del cruce del puente de 1 o 2 exploradores, sin importar su grupo, y el tiempo que toma eso es la velocidad del más lento. Aquí solo pueden ocurrir casos inválidos cuando habiendo 2 exploradores, se intente realizar el cruce de solo uno de ellos. En cualquier otro caso, el cruce será de un solo cambio de estado y en ningún momento pueden haber más exploradores de algúno de los grupos.
+
+        Para el caso recursivo, se chequeará antes de entrar en la recursión que el estado al que se va a cambiar sea uno válido. Si no lo es, cambia la cantidad de exploradores que vayan a cruzar. Si siguen obteniéndose estados inválidos, entonces no quedarán casos para probar y simplemente terminará la búsqueda en esa rama de estados sin haber encontrado una solución válida.
+
+        \subsubsection{Detalles implementativos}
+            El algoritmo fue implementado en lenguaje C++. Para almacenar la solución, se recurre a la clase \texttt{vector}, proporcionada por la librería estándar del lenguaje.
+
+            Para manejar los estados en el árbol de ejecución, se van almacenando los nuevos estados en un vector de \texttt{Estados} antes de entrar en una recursión y se quita al retornar de la misma. Esto es para que en la misma altura del arbol haya la misma cantidad de estados y para que no haya estados inválidos de una rama de desiciones en otra en la que se tomaron otros caminos.
+
+            Un \texttt{Estado} es una clase la cual consiste de 4 \texttt{Int}, 2 para la cantidad de arqueólogos y 2 para la cantidad de caníbales de cada uno de los lados en ese momento, y de un \texttt{Bool} para indicar si la linterna se encuentra a la derecha o no.
+
+            Llamamos \emph{árbol de ejecución} al árbol que se va generando de acuerdo a las desiciones tomadas en cuanto a qué explorador cruzará el puente.
+
+            La forma en que se elige quiénes cruzarán de un lado a otro luego de haber decidido a qué grupo pertenecen, es simplemente tomar los primeros (1 o 2) valores del vector que contiene a los arqueólogos o caníbales que vayan a pasar. De esta forma se están tomando siempre los más rápidos, como se mencionó anteriormente, ya que en cada iteración los 4 vectores de personas se ordenan de menor a mayor.
+
+        \begin{codesnippet}
+        \begin{verbatim}
+si estadoActual tiene linterna a la derecha
+  lado de origen  = lado derecho
+  lado de destino = lado izquierdo
+si no
+  lado de origen  = lado izquierdo
+  lado de destino = lado derecho
+linternaEnDeracha = !linternaEnDerecha
+
+ordenarVelocidades canibalesEnOrigen
+ordenarVelocidades canibalesEnDestino
+ordenarVelocidades arqueologosEnOrigen
+ordenarVelocidades arqeuologosEnDestino
+
+para #CanibalesQueCruzan entre 0 y minimo(2, #canibales del lado de origen):
+    para #ArqueologosQueCruzan entre 0 y (2 - #CanibalesQueCruzan):
+        si esEstadoValido(#CanibalesEnOrigen - #canibalesQueCruzan,
+                          #ArqueologosEnOrigen - #arqueologosQueCruzan,
+                          #CanibalesEnDestino + #CanibalesQueCruzan,
+                          #ArqueologosEnDestino + #ArqueologosQueCruzan,
+                          linternaEnDerecha, estadosAnteriores):
+
+            canibalesQueCruzan = canibalesEnOrigen[0 hasta #CanibalesQueCruzan]
+            agregar canibalesQueCruzan a CanibalesEnDestino
+            eliminar canibalesQueCruzan de CanibalesEnOrigen
+
+            arqueologosQueCruzan = arqueologosEnOrigen[0 hasta #ArqeueologosQueCruzan]
+            agregar arqueologosQueCruzan a ArqueologosEnDestino
+            eliminar arqueologosQueCruzan de ArqueologosEnOrigen
+
+            nuevoEstado = (tamaño(ArqueologosEnOrigen),
+                          tamaño(ArqueologosEnDestino),
+                          tamaño(CanibalesEnOrigen),
+                          tamaño(CanibalesEnDestino),
+                          linternaEnDerecha)
+
+            nuevoTiempo = tiempoActual + max(si mandarArqueologos > 0
+                                               entonces maximo(arqueologosMasRapidos)
+                                               sino 0,
+                                             si mandarCanibales > 0
+                                               entonces maximo(canibalesMasRapidos)
+                                               sino 0)
+
+            agregar nuevoEstado a EstadosAnteriores
+            recursiónCruzarPuente(estadosAnteriores, nuevoTiempo, soluciones)
+            eliminar nuevoEstado de EstadosAnteriores
+        fin si
+    fin para
+fin para
+        \end{verbatim}
+        \end{codesnippet}
+
+            Esta es una porción del algoritmo completo, en la cual se muestra cómo funciona la parte recursiva del mismo. La variable \emph{soluciones} no se modifica en esta parte ya que es simplemente agregar el tiempoActual a la lista, siendo tiempoActual el contador de tiempo que toma hasta ese estado cruzar el puente. La idea de agregar nuevoEstado a EstadosAnterirores consiste en poder eliminar los caminos que lleven a una situación que ya se haya estado con anterioridad (por ejemplo, que cruce un canibal y luego vuelva). Además, al quitarla luego de la recursión hace que para cada altura del árbol de ejecución tengamos la misma cantidad de estados y que éstos sean todos distintos. La razón por la cual serán distintos proviene de que cada estado se arma basándose en la cantidad de arqueólogos y caníbales que hay de cada lado y de qué lado está la linterna. Entonces si cada vez que haya que cruzar el puente se elige una cantidad distinta de exploradores, cada nuevo estado tendrá como máximo 5 formas distintas (que cruce un solo canibal, un solo arqueólogo, dos canibales, dos arqueólogos o un arqueólogo y un canibal).
+
+            La otra parte importante del algoritmo consiste en chequear si lograron cruzar todos los exploradores, que en tal caso como se menciona en el párrafo anterior, se agrega el tiempo que tomó cruzar el puente. Luego, se regresa hacia arriba en un nivel en el árbol de ejecución y se continúa probando las otras posibilidades de caminos.
+
+
+
+    % 3. Deducir una cota de complejidad temporal del algoritmo propuesto y justificar por qué el algoritmo cumple la cota dada. Utilizar el modelo uniforme.
+    \subsection{Complejidad teórica}
+
+      El algoritmo comienza tomando $2$ vectores, siendo uno para los arqueólogos y otro para los caníbales. En cada posición de cada uno se encontrará una velocidad correspondiente a algún arqueólogo o caníbal. El tamaño de cada vector será igual a la cantidad de arqueólogos/caníbales que se tomaron como entrada. Llamaremos $n$ a la cantidad de arqueólogos. Además, dada la lógica del algoritmo, si hay más caníbales que arqueólogos al comenzar, la ejecución termina sin llamar a la función principal y devuelve $-1$ inmediatamente, ya que no hay forma de que al comienzo haya más aqrueólogos que caníbales en el lado izquierdo. En cambio, si hay $0$ aqrueólogos o más arqueólogos que caníbales, sí se llama a la función que realiza \emph{Backtracking}.
+      En ella, se utilizandolizan $2$ vectores más para poder distinguir el lado del que se encuentra cada arqueólogo y cada caníbal. La inserción y eliminación de cada elemento en cada vector será de $O(1)$ amortizado ya que en caso de que el vector deba redimencionarse, se copian todos los elementos del vector a uno más grande dejando como complejidad $O(n)$.
+      En cada llamada a la función principal del algoritmo, se prueban $5$ casos: que cruce un arqueólogo solo, un canibal solo, dos arqueólogos, dos caníbales o un caníbal y un arqueólogo. Luego, cada nodo del árbol tendrá 5 hijos. Cada uno de ellos, será un posible estado válido y si lo es, se realizarán las operaciones necesarias para decidir quién cruzará el puente, las cuales consisten en los movimientos de personas entre vectores (que toma complejidad $O(n)$), previamente habiendo ordenado cada vector (en $O(n $log$ n)$) y luego llamar recursivamente a la función principal, lo que da una complejidad de $O(n $log$ n)$ para las operaciones que no son la llamada recursiva. Dado que se quieren probar todos los estados válidos, podemos decir que la complejidad temporal será el tiempo que tome recorrer cada uno de estos estados, que a la vez equivalen a los nodos del árbol de ejecución. Sabemos que la altura del árbol está acotada por la cantidad total de estados válidos. Este número se calcula de la siguiente manera:
+
+      Dado que la cantidad de caníbales está acotada por la cantidad de arqueólogos, la cantidad de formas válidas que hay para repartir a todas las personas en ambos lados del puente manteniendo el invariante de que no haya más caníbales que arqueólogos de ninguno de los dos lados se calcula utilizando combinatoria. La cantidad de caníbales posibles en cada lado del puente es menor o igual a la cantidad de arqueólogos de ese lado (o sea entre $0$ y $n$), pero en caso de que no haya arqueólogos en alguno de los lados, la cantidad de caníbales posibles es igual a la cantidad total de arqueólogos, salvo que no haya ninguno y en ese caso $n$ pasará a ser el número de caníbales totales.
+
+      \[
+      \sum_{i=1}^{n}(i+1) + (n+1)
+      \]
+      \[
+      \frac{(n+2)(n+1)}{2} + (n+1) - 1
+      \]
+      \[
+      \frac{(n+2)(n+1)}{2} + n
+      \]
+      \[
+      \frac{(n+2)(n+1)+2n}{2}
+      \]
+      \[
+      \frac{n^2+3n+2}{2}
+      \]
+
+      Y de este tipo de funcion sabemos \newline
+
+      \[
+      \frac{n^2+3n+2}{2} \in O(n^2)
+      \]
+
+      Entonces, la altura del árbol va a estar acotada por $O(n^2)$.
+      Retomando, llegamos a que la complejidad de encontrar las soluciones está acotada por $O(b^h)$ donde $b$ es la cantidad de ramas que se abren en cada nodo, $h$ es la altura del árbol y todo esto es el tamaño del árbol. Como mencionamos anteriormente, $b$ es exactamente $5$ y la altura del árbol está acotada por $O(n^2)$. Luego, la complejidad temporal para encontrar las soluciones sería $O(5^{n^2})$. Pero hasta aquí no tenemos en cuenta que cada nodo cuesta $O(n $log$ n)$. Incorporando esto a la complejidad anterior en la cual suponíamos que cada nodo tenía costo $O(1)$, nos queda que la complejidad temporal en peor caso es $O((n$ log $n) * 5^{n^2})$.
+
+      En cuanto a la complejidad espacial, se utiliza un historial de estados anteriores en los que se van guardando los estados válidos por los que se pasó hasta cierto punto en cada nodo del árbol. Se usa como si fuera una pila y cada vez que se accede a un nivel inferior en el árbol de ejecución, se guarda el estado actual de los caníbales, los arqueólogos y la linterna; mientras que cuando se sube en el árbol, se elimina el último estado actual. Debido a esto, la complejidad espacial en es $O(n^2)$ ya que la pila tendrá a lo sumo el mismo tamaño que la cantidad de estados en la rama más larga, y como probamos antes, este valor está acotado por esa complejidad. Además, lo que se guarda en cada estado son 4 valores enteros que indican la cantidad de arqueólogos y caníbales de cada lado, y un booleano (representado con 1 o 0) que indica de qué lado está la linterna.
+
+
+    % 4. Dar un código fuente claro que implemente la solución propuesta. Se deben incluir las partes relevantes del código como apéndice del informe impreso entregado.
+
+    % 5. Realizar una experimentación computacional para medir la performance del programa implementado. Usar un conjunto de casos de test en función de los parámetros de entrada, con instancias aleatorias e instancias particulares (de peor/mejor caso en tiempo de ejecución, por ejemplo). Presentar en forma gráfica una comparación entre los tiempos medidos y la complejidad teórica calculada y extraer conclusiones.
+    \subsection{Experimentación}
+
+	Para poder mostrar que la cota propuesta en la complejidad temporal funciona para el algoritmo que resuelve este problema, realizamos experimentos con cantidades de personas entre 1 y 7 pero siempre con mayor o igual número de arqueólogos que de caníbales. Los casos de prueba pueden observarse en la tabla que se encuentra en el anexo de este informe.
+
+  Los resultados obtenidos fueron plasmados en el siguiente gráfico. El mismo es la representación del tiempo en funcion de la cantidad de arqueólogos. También se muestra la funcion propuesta como cota de complejidad temporal.
+
+  \begin{figure}[H]
+      \begin{center}
+        \includegraphics[width=0.7\columnwidth]{imagenes/exp1Ej1-1a7.jpeg}
+        \caption{}
+      \end{center}
+  \end{figure}
+
+  Para cada valor en $x$ puede observarse que a medida que crece, hay más puntos en $y$ para el mismo $x$. Esto es porque si bien el eje X es la cantidad de arqueólogos, también varía la cantidad de caníbales por lo que el tiempo que toma cada ejecución del programa también depende de este valor, pero como se aclaró en la sección de complejidad, el número de caníbales va de 0 a la cantidad de arqueólogos (porque en caso contrario el programa termina en seguida a menos que no haya arqueólogos, caso que se verá más adelante) lo cual implica que nuestro tamaño de entrada $n$ (la cantidad de arqueólogos) es en realidad a lo sumo $2n$, pero en términos de complejidad el $2$ es una constante que podemos sacar.
+  De acuerdo a la tabla proporcionada, los pares (arqueólogo, caníbal) que toman más tiempo son \texttt{(1,1), (2,2), (3,2), (4,2), (5,3), (6,3), (7,3)}. Sin embargo, podemos notar como la cota de complejidad cumple, aunque no de manera ajustada, su función para estos experimentos.
+
+
+  Para el caso en que no haya arqueólogos y solo haya caníbales, esperábamos que la resolución del problema sea más rápida que en los casos que hay más arqueólogos que caníbales. Probamos con cantidades de caníbales entre 1 y 200 y en el próximo grafico se ilustran los resultados de tiempo en función del número de personas.
+
+  \begin{figure}[H]
+      \begin{center}
+        \includegraphics[width=0.7\columnwidth]{imagenes/exp2Ej1.jpeg}
+        \caption{}
+      \end{center}
+  \end{figure}
+
+  Notamos como el tiempo que toma a mayor cantidad de caníbales sin arqueólogos crece mucho más lento que para los casos con arqueólogos. Esto se debe a que por un lado, las ramas en que cruzan arqueologos no se prueban, sino que solo se intenta que crucen 1 o 2 caníbales. Luego, la cantidad de estados posibles se reduce a 2 veces la cantidad de formas que se pueden distribuir los caníbales en ambos lados del puente (una por cada lado de la linterna), que es igual a $2*(n^2)$; reducimos la cota de complejidad a $O(n $log$ n*2^{n^2})$. El cambio no es muy grande debido a que las cotas no están totalmente ajustadas, pero funcionan para dar una idea del peor caso acotado por arriba.
