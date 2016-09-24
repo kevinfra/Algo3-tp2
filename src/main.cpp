@@ -57,12 +57,14 @@ int main(int argc, char *argv[]) {
 			cin >> p;
 			cout << "ingresar en las siguientes " << f << " filas los chars '.' para indicar camino," << endl;
 			cout << "'#' para indicar pared, 'o' para inicio y 'x' para destino. El largo de las filas debe ser " << c << endl;
-			//Falta transformar entrada a grafo
-
-			Grafos::ListaAdy grafo(c*f*p);
+			int pOriginal = p;
+			if (p == 0)
+				p = 1;
+			Grafos::ListaAdy grafo(c*f*(p+1));
+			p = pOriginal;
 			int s, t;
 			parserEj1(f, c, p, grafo, s, t);
-			int caminoMinimo = grafo.BFS(s, t);
+			int caminoMinimo = grafo.BFS(s, t, f, c);
 			if (caminoMinimo == -1){
 				cout << -1 << endl;
 			}
@@ -90,15 +92,15 @@ int main(int argc, char *argv[]) {
 
 			for (int i = 0; i < filasReal; ++i) { //Para este entonces, asumo que aquellas paredes indestructibles, seran pasadas como #.
 				for (int j = 0; j < columnasReal; ++j) {
-						(cin >> caminoPared);	
-						matriz[i][j] = caminoPared;			
+						(cin >> caminoPared);
+						matriz[i][j] = caminoPared;
 				}
 			}
 
 			vector<arista> aristas;
 			for (int iFilas = 0; iFilas < filasReal; ++iFilas) {
 				for (int iColumnas = 0; iColumnas < columnasReal; ++iColumnas) {
-					if (matriz[iFilas][iColumnas] == '.') {	
+					if (matriz[iFilas][iColumnas] == '.') {
 						if (matriz[iFilas][iColumnas + 1] != '#') {
 							arista a;
 							a.inicio = iFilas * columnasReal + iColumnas;
@@ -115,7 +117,7 @@ int main(int argc, char *argv[]) {
 							aristas.push_back(a);
 						}
 					}
-					
+
 					if (esNumero(matriz[iFilas][iColumnas])) {
 						bool puseNumero = false;
 						if (matriz[iFilas][iColumnas + 1] != '#' && !esNumero(matriz[iFilas][iColumnas + 1])) {

@@ -10,7 +10,7 @@ void Grafos::ListaAdy::agregarArista(int u, int v){
     this->adyacencia[u].push_back(v);
 }
 
-int Grafos::ListaAdy::BFS(int s, int t){
+int Grafos::ListaAdy::BFS(int s, int t, int f, int c){
   int res = -1;
   std::queue<int> cola;
   int distancias[this->nodosTotales];
@@ -24,8 +24,8 @@ int Grafos::ListaAdy::BFS(int s, int t){
   while (!cola.empty()) {
     int tope = cola.front();
     cola.pop();
-    if (((tope - t) % this->nodosTotales) == 0) {
-      return distancias[t];
+    if ((tope % (f*c)) == t) {
+      return distancias[tope];
     }
     for (int nroVecino = 0; nroVecino < this->adyacencia[tope].size(); ++nroVecino){
       if (distancias[this->adyacencia[tope][nroVecino]] < 0){
@@ -34,5 +34,15 @@ int Grafos::ListaAdy::BFS(int s, int t){
       }
     }
   }
+  //Esto es para probar por qué falla
+  // std::cout << t << std::endl;
+  // for (int i = t; i < this->nodosTotales; i=t+(f*c))
+  // {
+  //   if (distancias[i] != -1)
+  //   {
+  //     std::cout << distancias[i] << " " << i << std::endl;
+  //     return distancias[i];
+  //   }
+  // }
   return res;
 }
