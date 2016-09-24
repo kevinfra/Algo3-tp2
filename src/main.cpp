@@ -81,6 +81,9 @@ int main(int argc, char *argv[]) {
 			int columnasReal = c;
 			char matriz[filasReal][columnasReal];
 			char caminoPared;
+			int nodos = 0;
+			bool encerrado = false;
+			bool encerradoRes = false;
 
 			for (int i = 0; i < filasReal; ++i) { //Para este entonces, asumo que aquellas paredes indestructibles, seran pasadas como #.
 				for (int j = 0; j < columnasReal; ++j) {
@@ -92,7 +95,8 @@ int main(int argc, char *argv[]) {
 			vector<arista> aristas;
 			for (int iFilas = 0; iFilas < filasReal; ++iFilas) {
 				for (int iColumnas = 0; iColumnas < columnasReal; ++iColumnas) {
-					if (matriz[iFilas][iColumnas] == '.') {	
+					if (matriz[iFilas][iColumnas] == '.') {
+						nodos++;
 						if (matriz[iFilas][iColumnas + 1] != '#') {
 							arista a;
 							a.inicio = iFilas * columnasReal + iColumnas;
@@ -108,6 +112,8 @@ int main(int argc, char *argv[]) {
 							a.costo = 0;
 							aristas.push_back(a);
 						}
+						encerrado = matriz[iFilas][iColumnas + 1] == '#' && matriz[iFilas + 1][iColumnas] == '#' && matriz[iFilas - 1][iColumnas] == '#' && matriz[iFilas][iColumnas - 1] == '#';
+						encerradoRes = encerradoRes || encerrado;
 					}
 					
 					if (esNumero(matriz[iFilas][iColumnas])) {
@@ -135,7 +141,7 @@ int main(int argc, char *argv[]) {
 
 			int res = 0;
 
-			if(aristas.size() == 0){
+			if(nodos == 0 || (nodos > 1 && encerradoRes) ){
 				res = -1;
 				cout << res << endl;
 			}
