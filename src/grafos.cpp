@@ -1,16 +1,16 @@
 #include <grafos.h>
 
-ListaAdy::ListaAdy(int n){
+Grafos::ListaAdy::ListaAdy(int n){
     this->nodosTotales = n;
     std::vector< std::vector < int > > listaAd(n);
     this->adyacencia = listaAd;
 }
 
-void ListaAdy::agregarArista(int u, int v){
+void Grafos::ListaAdy::agregarArista(int u, int v){
     this->adyacencia[u].push_back(v);
 }
 
-int ListaAdy::BFS(int s, int t){
+int Grafos::ListaAdy::BFS(int s, int t){
   int res = -1;
   std::queue<int> cola;
   int distancias[this->nodosTotales];
@@ -24,7 +24,7 @@ int ListaAdy::BFS(int s, int t){
   while (!cola.empty()) {
     int tope = cola.front();
     cola.pop();
-    if (tope == t) {
+    if (((tope - t) % this->nodosTotales) == 0) {
       return distancias[t];
     }
     for (int nroVecino = 0; nroVecino < this->adyacencia[tope].size(); ++nroVecino){
