@@ -10,7 +10,8 @@
 #include <grafos.h>
 #include <grafos2.h>
 #include <ejercicio1.h>
-#include <grafosEj3.h>
+#include <grafos3.h>
+
 
 using namespace std;
 
@@ -57,12 +58,14 @@ int main(int argc, char *argv[]) {
 			cin >> p;
 			cout << "ingresar en las siguientes " << f << " filas los chars '.' para indicar camino," << endl;
 			cout << "'#' para indicar pared, 'o' para inicio y 'x' para destino. El largo de las filas debe ser " << c << endl;
-			//Falta transformar entrada a grafo
-
-			Grafos::ListaAdy grafo(c*f*p);
+			int pOriginal = p;
+			if (p == 0)
+				p = 1;
+			Grafos::ListaAdy grafo(c*f*(p+1));
+			p = pOriginal;
 			int s, t;
 			parserEj1(f, c, p, grafo, s, t);
-			int caminoMinimo = grafo.BFS(s, t);
+			int caminoMinimo = grafo.BFS(s, t, f, c);
 			if (caminoMinimo == -1){
 				cout << -1 << endl;
 			}
@@ -87,18 +90,22 @@ int main(int argc, char *argv[]) {
 			int columnasReal = c;
 			char matriz[filasReal][columnasReal];
 			char caminoPared;
+			int nodos = 0;
+			bool encerrado = false;
+			bool encerradoRes = false;
 
 			for (int i = 0; i < filasReal; ++i) { //Para este entonces, asumo que aquellas paredes indestructibles, seran pasadas como #.
 				for (int j = 0; j < columnasReal; ++j) {
-						(cin >> caminoPared);	
-						matriz[i][j] = caminoPared;			
+						(cin >> caminoPared);
+						matriz[i][j] = caminoPared;
 				}
 			}
 
 			vector<arista> aristas;
 			for (int iFilas = 0; iFilas < filasReal; ++iFilas) {
 				for (int iColumnas = 0; iColumnas < columnasReal; ++iColumnas) {
-					if (matriz[iFilas][iColumnas] == '.') {	
+					if (matriz[iFilas][iColumnas] == '.') {
+						nodos++;
 						if (matriz[iFilas][iColumnas + 1] != '#') {
 							arista a;
 							a.inicio = iFilas * columnasReal + iColumnas;
@@ -114,8 +121,10 @@ int main(int argc, char *argv[]) {
 							a.costo = 0;
 							aristas.push_back(a);
 						}
+						encerrado = matriz[iFilas][iColumnas + 1] == '#' && matriz[iFilas + 1][iColumnas] == '#' && matriz[iFilas - 1][iColumnas] == '#' && matriz[iFilas][iColumnas - 1] == '#';
+						encerradoRes = encerradoRes || encerrado;
 					}
-					
+
 					if (esNumero(matriz[iFilas][iColumnas])) {
 						bool puseNumero = false;
 						if (matriz[iFilas][iColumnas + 1] != '#' && !esNumero(matriz[iFilas][iColumnas + 1])) {
@@ -141,7 +150,7 @@ int main(int argc, char *argv[]) {
 
 			int res = 0;
 
-			if(aristas.size() == 0){
+			if(nodos == 0 || (nodos > 1 && encerradoRes) ){
 				res = -1;
 				cout << res << endl;
 			}
@@ -174,24 +183,60 @@ int main(int argc, char *argv[]) {
 	else if (numeroDeEjercicio == 3) {
 
 		if (!experimentos){
-			// int n, m;
-			// cout << "Ingrese la cantidad de estaciones y la cantidad de vias" << endl;
-			// cin >> n;
-			// cin >> m;
-			// cout << "ingresar en las siguientes " << n << " filas los chars '.' para indicar camino," << endl;
-			// cout << "'#' para indicar pared, 'o' para inicio y 'x' para destino. El largo de las filas debe ser " << m << endl;
-			// const int tamArray = m*3;
-			// int matrizPlana[tamArray];
-			// int estacionODistancia;
-			// for (int i = 0; i < tamArray && (cin >> estacionODistancia); ++i) {
-			// 	matrizPlana[i] = estacionODistancia;
-			// }
-			// vector< vector< Ej3::Nodos > > listaDeAd();
-			// for (int indiceColumnas = 0; indiceColumnas < m; ++indiceColumnas){
-			// 	for (int indiceFilas = 0; indiceFilas < 3; ++indiceFilas){
+			 int n, m;
+			 cout << "Ingrese la cantidad de estaciones..." << endl;
+			 cin >> n;
+			 cout << "Ingrese la cantidad de vias..." << endl;
+			 cin >> m;
+
+			 int via = 0;
+			 int viaA;
+			 int viaB;
+			 int viaC;
+			 vector<ABC> vias;
+		 	while (via < m)
+		 	{
+				cout << "Camino desde via nro..." << endl;
+			 	cin >> viaA;
+				cout << "Camino hasta via nro..." << endl;
+			 	cin >> viaB;
+			 	cout << "Distancia..." << endl;
+			 	cin >> viaC;
+
+			 	ABC viaCompleta;
+			 	get<0>(viaCompleta) = viaA;
+			 	get<1>(viaCompleta) = viaB;
+			 	get<2>(viaCompleta) = viaC;
+			 	vias.push_back(viaCompleta);
+
+			 	via++;		 		
+		 	}
+
+		 	grafos3::ListAdy listAdy3(n, m, vias);
+		 	grafos3::salida salida3 = listAdy3.dijkstra();
+		 	cout << "Mínimo tiempo: " << salida3.T << endl;
+		 	cout << "Cantidad de estaciones que debe recorrer: " << salida3.S << endl;
+		 	cout << "Forma de escapar lo más rapido posible: " << endl;
+		 	for (uint i = 0; i < salida3.escape.size(); ++i)
+		 	{
+		 		cout << salida3.escape[i] << " ";
+		 	}
+		 	cout << endl;
+
+			 // cout << "ingresar en las siguientes " << n << " filas los chars '.' para indicar camino," << endl;
+			 // cout << "'#' para indicar pared, 'o' para inicio y 'x' para destino. El largo de las filas debe ser " << m << endl;
+			 // const int tamArray = m*3;
+			 // int matrizPlana[tamArray];
+			 // int estacionODistancia;
+			 // for (int i = 0; i < tamArray && (cin >> estacionODistancia); ++i) {
+			 // 	matrizPlana[i] = estacionODistancia;
+			 // }
+			 // vector< vector< Ej3::Nodos > > listaDeAd();
+			 // for (int indiceColumnas = 0; indiceColumnas < m; ++indiceColumnas){
+			 // 	for (int indiceFilas = 0; indiceFilas < 3; ++indiceFilas){
 					
-			// 	}
-			// }
+			 // 	}
+			 // }
 		}
 		else{
 
