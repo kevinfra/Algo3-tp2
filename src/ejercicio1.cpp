@@ -182,12 +182,11 @@ void mirarIzquierdaDerechaYArriba(int f, int c, int p, int nodoActual, int nivel
 }
 
 int parserEj1(int f, int c, int p, Grafos::ListaAdy &grafo, int &s, int &t){
-  const int tamArray = c*f;
   char matriz[c][f];
   char puntoOPared;
   //entra mapa salen tripas
-  for (int i = 0; i < c; ++i) {
-    for (int k = 0; k < f; ++k){
+  for (int k = 0; k < f; ++k) {
+    for (int i = 0; i < c; ++i){
       std::cin >> puntoOPared;
       matriz[i][k] = puntoOPared;
     }

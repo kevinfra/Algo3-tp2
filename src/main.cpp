@@ -58,11 +58,7 @@ int main(int argc, char *argv[]) {
 			cin >> p;
 			cout << "ingresar en las siguientes " << f << " filas los chars '.' para indicar camino," << endl;
 			cout << "'#' para indicar pared, 'o' para inicio y 'x' para destino. El largo de las filas debe ser " << c << endl;
-			int pOriginal = p;
-			if (p == 0)
-				p = 1;
 			Grafos::ListaAdy grafo(c*f*(p+1));
-			p = pOriginal;
 			int s, t;
 			parserEj1(f, c, p, grafo, s, t);
 			int caminoMinimo = grafo.BFS(s, t, f, c);
