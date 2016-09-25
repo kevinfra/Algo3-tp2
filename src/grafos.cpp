@@ -34,15 +34,5 @@ int Grafos::ListaAdy::BFS(int s, int t, int f, int c){
       }
     }
   }
-  //Esto es para probar por qué falla
-  // std::cout << t << std::endl;
-  // for (int i = t; i < this->nodosTotales; i=t+(f*c))
-  // {
-  //   if (distancias[i] != -1)
-  //   {
-  //     std::cout << distancias[i] << " " << i << std::endl;
-  //     return distancias[i];
-  //   }
-  // }
   return res;
 }
