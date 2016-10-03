@@ -1,6 +1,7 @@
 #include <iostream>
 #include <stdio.h>      /* printf, fgets */
 #include <stdlib.h>     /* atol */
+#include <fstream>
 #include <utility>
 #include <vector>
 #include <list>
@@ -25,6 +26,8 @@ double stop_timer() {
 	chrono::time_point<chrono::high_resolution_clock> end_time = chrono::high_resolution_clock::now();
 	return double(chrono::duration_cast<chrono::nanoseconds>(end_time - start_time).count());
 }
+
+std::vector< std::vector< char > > cargarMatrizEj1(int c, int f);
 
 int main(int argc, char *argv[]) {
 	int numeroDeEjercicio = 0;
@@ -60,7 +63,8 @@ int main(int argc, char *argv[]) {
 			cout << "'#' para indicar pared, 'o' para inicio y 'x' para destino. El largo de las filas debe ser " << c << endl;
 			Grafos::ListaAdy grafo(c*f*(p+1));
 			int s, t;
-			parserEj1(f, c, p, grafo, s, t);
+			std::vector< std::vector< char > > matriz = cargarMatrizEj1(c, f);
+			parserEj1(f, c, p, matriz, grafo, s, t);
 			int caminoMinimo = grafo.BFS(s, t, f, c);
 			if (caminoMinimo == -1){
 				cout << -1 << endl;
@@ -68,10 +72,59 @@ int main(int argc, char *argv[]) {
 			else {
 				cout << "El camino mínimo tiene distancia: " << caminoMinimo << endl;
 			}
-
 		}
-		else {
-
+		else { //modo de uso: -exp <nombreDeArchivoEntrada >nombreDeArchivoSalida
+			cout << "----" << endl;
+			cout << "todas paredes salvo inicio y final en matriz de 10x10" << endl;
+			cout << "---" << endl;
+			int f = 10;
+			int c = 10;
+			std::vector< std::vector< char > > matriz = cargarMatrizEj1(c, f);
+			for (int p = 0; p < 99; ++p){
+				Grafos::ListaAdy grafo(c*f*(p+1));
+				for (int j = 0; j < 500; ++j){
+					int s,t;
+					start_timer();
+					parserEj1(f, c, p, matriz, grafo, s, t);
+					int caminoMinimo = grafo.BFS(s, t, f, c);
+					double tiempo = stop_timer();
+					cout << f << " " << c << " " << p << " " << caminoMinimo << " " << tiempo << endl;
+				}
+			}
+			cout << "----" << endl;
+			cout << "mitad paredes en matriz de 10x10" << endl;
+			cout << "---" << endl;
+			f = 10;
+			c = 10;
+			matriz = cargarMatrizEj1(c, f);
+			for (int p = 0; p < 99; ++p){
+				Grafos::ListaAdy grafo(c*f*(p+1));
+				for (int j = 0; j < 500; ++j){
+					int s,t;
+					start_timer();
+					parserEj1(f, c, p, matriz, grafo, s, t);
+					int caminoMinimo = grafo.BFS(s, t, f, c);
+					double tiempo = stop_timer();
+					cout << f << " " << c << " " << p << " " << caminoMinimo << " " << tiempo << endl;
+				}
+			}
+			cout << "----" << endl;
+			cout << "otra mitad paredes en matriz de 10x10" << endl;
+			cout << "---" << endl;
+			f = 10;
+			c = 10;
+			matriz = cargarMatrizEj1(c, f);
+			for (int p = 0; p < 99; ++p){
+				Grafos::ListaAdy grafo(c*f*(p+1));
+				for (int j = 0; j < 500; ++j){
+					int s,t;
+					start_timer();
+					parserEj1(f, c, p, matriz, grafo, s, t);
+					int caminoMinimo = grafo.BFS(s, t, f, c);
+					double tiempo = stop_timer();
+					cout << f << " " << c << " " << p << " " << caminoMinimo << " " << tiempo << endl;
+				}
+			}
 		}
 	}
 	else if (numeroDeEjercicio == 2) {
@@ -225,4 +278,20 @@ int main(int argc, char *argv[]) {
 		return -1;
 	}
 	return 0;
+}
+
+
+std::vector< std::vector< char > > cargarMatrizEj1(int c, int f){
+	std::vector< std::vector< char > > matriz(c);
+  for (int i = 0; i < c; ++i){
+    matriz[i].resize(f);
+  }
+  char puntoOPared;
+  for (int k = 0; k < f; ++k) {
+    for (int i = 0; i < c; ++i){
+      std::cin >> puntoOPared;
+      matriz[i][k] = puntoOPared;
+    }
+  }
+  return matriz;
 }

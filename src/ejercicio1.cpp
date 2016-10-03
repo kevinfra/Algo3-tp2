@@ -181,16 +181,7 @@ void mirarIzquierdaDerechaYArriba(int f, int c, int p, int nodoActual, int nivel
   }
 }
 
-int parserEj1(int f, int c, int p, Grafos::ListaAdy &grafo, int &s, int &t){
-  char matriz[c][f];
-  char puntoOPared;
-  //entra mapa salen tripas
-  for (int k = 0; k < f; ++k) {
-    for (int i = 0; i < c; ++i){
-      std::cin >> puntoOPared;
-      matriz[i][k] = puntoOPared;
-    }
-  }
+int parserEj1(int f, int c, int p, std::vector< std::vector < char > > matriz, Grafos::ListaAdy &grafo, int &s, int &t){
 
   //verifico que sean caracteres validos
   char inicio = 'o';
@@ -220,7 +211,7 @@ int parserEj1(int f, int c, int p, Grafos::ListaAdy &grafo, int &s, int &t){
         }
       }
       else if (matriz[i][k] != '#' && matriz[i][k] != '.'){
-        std::cout << "Error en parser. Caracter no valido" << std::endl;
+        std::cout << "Error en parser. Caracter no valido: " << matriz[i][k] << " " << i << " " << k << std::endl;
         return -1;
       }
     }
