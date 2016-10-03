@@ -32,6 +32,7 @@ std::vector< std::vector< char > > cargarMatrizEj1(int c, int f);
 int main(int argc, char *argv[]) {
 	int numeroDeEjercicio = 0;
 	bool experimentos = false;
+	bool random = false;
 	if (argc == 2) {
 		numeroDeEjercicio = atoi(argv[1]);
 	}
@@ -41,6 +42,9 @@ int main(int argc, char *argv[]) {
 		if (exp == "-exp") {
 			experimentos = true;
 		}
+		if (exp == "-random"){
+			random = true;
+		}
 	}
 	else {
 		cout << "Modo de uso: \n tp2 numeroDeEjercicio \n Opcional luego del numero de ejercicio: " << endl;
@@ -49,11 +53,11 @@ int main(int argc, char *argv[]) {
 	}
 
 
-	if (!experimentos)
+	if (!(experimentos || random))
 		cout << "Corriendo ejercicio numero " << numeroDeEjercicio << endl;
 
 	if (numeroDeEjercicio == 1) {
-		if (!experimentos) {
+		if (!experimentos && !random) {
 			int f, c, p;
 			cout << "Ingrese filas, columnas y el numero de las paredes que pueden derribarse" << endl;
 			cin >> f;
@@ -73,58 +77,74 @@ int main(int argc, char *argv[]) {
 				cout << "El camino mínimo tiene distancia: " << caminoMinimo << endl;
 			}
 		}
-		else { //modo de uso: -exp <nombreDeArchivoEntrada >nombreDeArchivoSalida
+		else if(experimentos){ //modo de uso: -exp <nombreDeArchivoEntrada >nombreDeArchivoSalida
 			cout << "----" << endl;
 			cout << "todas paredes salvo inicio y final en matriz de 10x10" << endl;
 			cout << "---" << endl;
 			int f = 10;
 			int c = 10;
-			std::vector< std::vector< char > > matriz = cargarMatrizEj1(c, f);
-			for (int p = 0; p < 99; ++p){
-				Grafos::ListaAdy grafo(c*f*(p+1));
-				for (int j = 0; j < 500; ++j){
-					int s,t;
-					start_timer();
-					parserEj1(f, c, p, matriz, grafo, s, t);
-					int caminoMinimo = grafo.BFS(s, t, f, c);
-					double tiempo = stop_timer();
-					cout << f << " " << c << " " << p << " " << caminoMinimo << " " << tiempo << endl;
+			std::vector< std::vector< char > > matriz;
+			for (int cantidadDeMatrices = 0; cantidadDeMatrices < 4; ++cantidadDeMatrices){
+				cout << "----" << endl;
+				cout << "mitad paredes en matriz de 10x10" << endl;
+				cout << "---" << endl;
+				f = 10;
+				c = 10;
+				matriz = cargarMatrizEj1(c, f);
+				for (int p = 0; p < 99; ++p){
+					Grafos::ListaAdy grafo(c*f*(p+1));
+					for (int j = 0; j < 5; ++j){
+						int s,t;
+						start_timer();
+						parserEj1(f, c, p, matriz, grafo, s, t);
+						int caminoMinimo = grafo.BFS(s, t, f, c);
+						double tiempo = stop_timer();
+						cout << f << " " << c << " " << p << " " << caminoMinimo << " " << tiempo << endl;
+					}
 				}
 			}
-			cout << "----" << endl;
-			cout << "mitad paredes en matriz de 10x10" << endl;
-			cout << "---" << endl;
-			f = 10;
-			c = 10;
-			matriz = cargarMatrizEj1(c, f);
-			for (int p = 0; p < 99; ++p){
-				Grafos::ListaAdy grafo(c*f*(p+1));
-				for (int j = 0; j < 500; ++j){
-					int s,t;
-					start_timer();
-					parserEj1(f, c, p, matriz, grafo, s, t);
-					int caminoMinimo = grafo.BFS(s, t, f, c);
-					double tiempo = stop_timer();
-					cout << f << " " << c << " " << p << " " << caminoMinimo << " " << tiempo << endl;
+			for (int veces = 0; veces < 4; ++veces){
+				cout << "----" << endl;
+				cout << "matrices random nro " << veces << endl;
+				cout << "---" << endl;
+				cin >> f;
+				cin >> c;
+				matriz = cargarMatrizEj1(c, f);
+				for (int p = 0; p < 99; ++p){
+					Grafos::ListaAdy grafo(c*f*(p+1));
+					for (int j = 0; j < 5; ++j){
+						int s,t;
+						start_timer();
+						parserEj1(f, c, p, matriz, grafo, s, t);
+						int caminoMinimo = grafo.BFS(s, t, f, c);
+						double tiempo = stop_timer();
+						cout << f << " " << c << " " << p << " " << caminoMinimo << " " << tiempo << endl;
+					}
 				}
 			}
-			cout << "----" << endl;
-			cout << "otra mitad paredes en matriz de 10x10" << endl;
-			cout << "---" << endl;
-			f = 10;
-			c = 10;
-			matriz = cargarMatrizEj1(c, f);
-			for (int p = 0; p < 99; ++p){
-				Grafos::ListaAdy grafo(c*f*(p+1));
-				for (int j = 0; j < 500; ++j){
-					int s,t;
-					start_timer();
-					parserEj1(f, c, p, matriz, grafo, s, t);
-					int caminoMinimo = grafo.BFS(s, t, f, c);
-					double tiempo = stop_timer();
-					cout << f << " " << c << " " << p << " " << caminoMinimo << " " << tiempo << endl;
+		}
+		else if(random){
+			random_device rd;
+			mt19937 gen(rd());
+			uniform_int_distribution<> tam(3,50);
+			uniform_int_distribution<> caracter2(0,1);
+			uniform_int_distribution<> caracter3(0,49);
+			uniform_int_distribution<> caracter4(0,79);
+			for (int veces = 0; veces < 4; ++veces){
+				int f = tam(gen);
+				int c = tam(gen);
+				char puntoOPared[2] = {'.', '#'};
+				cout << f << " " << c << endl;
+				for (int i = 0; i < f; ++i){
+					for (int k = 0; k < c; ++k){
+						if(i == 0 && k == 0) cout << 'o';
+						else if(i == f-1 && k == c-1) cout << 'x';
+						else cout << puntoOPared[caracter2(gen)];
+					}
+					cout << endl;
 				}
 			}
+
 		}
 	}
 	else if (numeroDeEjercicio == 2) {
