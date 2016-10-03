@@ -76,38 +76,26 @@ BFS(enteros : s, t, f, c)
     % 3. Deducir una cota de complejidad temporal del algoritmo propuesto y justificar por qué el algoritmo cumple la cota dada. Utilizar el modelo uniforme.
     \subsection{Complejidad teórica}
 
-      El algoritmo comienza tomando $2$ vectores, siendo uno para los arqueólogos y otro para los caníbales. En cada posición de cada uno se encontrará una velocidad correspondiente a algún arqueólogo o caníbal. El tamaño de cada vector será igual a la cantidad de arqueólogos/caníbales que se tomaron como entrada. Llamaremos $n$ a la cantidad de arqueólogos. Además, dada la lógica del algoritmo, si hay más caníbales que arqueólogos al comenzar, la ejecución termina sin llamar a la función principal y devuelve $-1$ inmediatamente, ya que no hay forma de que al comienzo haya más aqrueólogos que caníbales en el lado izquierdo. En cambio, si hay $0$ aqrueólogos o más arqueólogos que caníbales, sí se llama a la función que realiza \emph{Backtracking}.
-      En ella, se utilizandolizan $2$ vectores más para poder distinguir el lado del que se encuentra cada arqueólogo y cada caníbal. La inserción y eliminación de cada elemento en cada vector será de $O(1)$ amortizado ya que en caso de que el vector deba redimencionarse, se copian todos los elementos del vector a uno más grande dejando como complejidad $O(n)$.
-      En cada llamada a la función principal del algoritmo, se prueban $5$ casos: que cruce un arqueólogo solo, un canibal solo, dos arqueólogos, dos caníbales o un caníbal y un arqueólogo. Luego, cada nodo del árbol tendrá 5 hijos. Cada uno de ellos, será un posible estado válido y si lo es, se realizarán las operaciones necesarias para decidir quién cruzará el puente, las cuales consisten en los movimientos de personas entre vectores (que toma complejidad $O(n)$), previamente habiendo ordenado cada vector (en $O(n $log$ n)$) y luego llamar recursivamente a la función principal, lo que da una complejidad de $O(n $log$ n)$ para las operaciones que no son la llamada recursiva. Dado que se quieren probar todos los estados válidos, podemos decir que la complejidad temporal será el tiempo que tome recorrer cada uno de estos estados, que a la vez equivalen a los nodos del árbol de ejecución. Sabemos que la altura del árbol está acotada por la cantidad total de estados válidos. Este número se calcula de la siguiente manera:
-
-      Dado que la cantidad de caníbales está acotada por la cantidad de arqueólogos, la cantidad de formas válidas que hay para repartir a todas las personas en ambos lados del puente manteniendo el invariante de que no haya más caníbales que arqueólogos de ninguno de los dos lados se calcula utilizando combinatoria. La cantidad de caníbales posibles en cada lado del puente es menor o igual a la cantidad de arqueólogos de ese lado (o sea entre $0$ y $n$), pero en caso de que no haya arqueólogos en alguno de los lados, la cantidad de caníbales posibles es igual a la cantidad total de arqueólogos, salvo que no haya ninguno y en ese caso $n$ pasará a ser el número de caníbales totales.
+      Para este análisis, nuevamente separaremos el algoritmo en dos partes (construcción del grafo y BFS). En la primera parte, se generan $P+1$ niveles de $FC$ nodos que como se explica en el punto anterior, se representan mediante listas de adyacencias. Agregar una arista entre dos nodos cuesta $O(1)$ ya que es simplemente agregar el número de nodo destino de la arista a la lista de adyacencia del nodo origen. Hacer esto por cada nodo costaría $O(|E|)$ por cada nivel con $|E|$ siendo el número de aristas. Sin embargo, al ser un digrafo tipo \textit{grid}, la cantidad máxima de aristas por nodo es de 4 porque cada nodo se conecta con, a lo sumo, un nodo a cada lado (izquierda, derecha, arriba y abajo). Además, si bien hay $FC$ nodos en cada nivel, los nodos que sean paredes no tendrán aristas de entrada que provengan de nodos del mismo piso. Luego, $|E| \leq 4FC \in O(FC)$. Como esto ocurre $P+1$ veces, la complejidad de la primera parte es
 
       \[
-      \sum_{i=1}^{n}(i+1) + (n+1)
-      \]
-      \[
-      \frac{(n+2)(n+1)}{2} + (n+1) - 1
-      \]
-      \[
-      \frac{(n+2)(n+1)}{2} + n
-      \]
-      \[
-      \frac{(n+2)(n+1)+2n}{2}
-      \]
-      \[
-      \frac{n^2+3n+2}{2}
+        O((P+1)FC) \in O(FCP)
       \]
 
-      Y de este tipo de funcion sabemos \newline
+
+      La segunda parte, el algoritmo conocido como \textit{BFS}, tiene complejidad $O(|V| + |E|)$ siendo $|V|$ la cantidad de nodos. Ya probamos que $|E| \in O(FCP)$ y sabemos que $|V| = FC$, entonces la complejidad de la segunda parte es
 
       \[
-      \frac{n^2+3n+2}{2} \in O(n^2)
+        O(FC + FCP) \in O(FCP)
       \]
 
-      Entonces, la altura del árbol va a estar acotada por $O(n^2)$.
-      Retomando, llegamos a que la complejidad de encontrar las soluciones está acotada por $O(b^h)$ donde $b$ es la cantidad de ramas que se abren en cada nodo, $h$ es la altura del árbol y todo esto es el tamaño del árbol. Como mencionamos anteriormente, $b$ es exactamente $5$ y la altura del árbol está acotada por $O(n^2)$. Luego, la complejidad temporal para encontrar las soluciones sería $O(5^{n^2})$. Pero hasta aquí no tenemos en cuenta que cada nodo cuesta $O(n $log$ n)$. Incorporando esto a la complejidad anterior en la cual suponíamos que cada nodo tenía costo $O(1)$, nos queda que la complejidad temporal en peor caso es $O((n$ log $n) * 5^{n^2})$.
+      Considerando las dos partes juntas, nos queda que la complejidad temporal es
 
-      En cuanto a la complejidad espacial, se utiliza un historial de estados anteriores en los que se van guardando los estados válidos por los que se pasó hasta cierto punto en cada nodo del árbol. Se usa como si fuera una pila y cada vez que se accede a un nivel inferior en el árbol de ejecución, se guarda el estado actual de los caníbales, los arqueólogos y la linterna; mientras que cuando se sube en el árbol, se elimina el último estado actual. Debido a esto, la complejidad espacial en es $O(n^2)$ ya que la pila tendrá a lo sumo el mismo tamaño que la cantidad de estados en la rama más larga, y como probamos antes, este valor está acotado por esa complejidad. Además, lo que se guarda en cada estado son 4 valores enteros que indican la cantidad de arqueólogos y caníbales de cada lado, y un booleano (representado con 1 o 0) que indica de qué lado está la linterna.
+      \[
+        O(FCP + FCP) \in O(FCP)
+      \]
+
+      En cuanto a la complejidad espacial, el tamaño del grafo sobre listas de adyacencias es de $O(FCP)$ ya que es la cantidad de nodos totales sumado a lo que, por lo probado anteriormente, acota la cantidad de aristas totales.
 
 
     % 4. Dar un código fuente claro que implemente la solución propuesta. Se deben incluir las partes relevantes del código como apéndice del informe impreso entregado.
