@@ -19,7 +19,7 @@ ListAdy::ListAdy(int estaciones, int vias, vector<ABC> recorridos) {
 	}
 }
 
-//O(n^2 * log n) siendo n la cantidad de estaciones
+//O((n+m) * log n) siendo n la cantidad de estaciones y m la cantidad de vías
 salida ListAdy::dijkstra() {
 	salida salida1;
     vector<int> distancias(this->N, INFINITO); //distancias[i] contiene la distancia mínima para llegar del nodo 0 al nodo i. Inicializados en INFINITO
@@ -44,7 +44,8 @@ salida ListAdy::dijkstra() {
     noVisitados.insert( {0, 0} ); //inserto nodo inicial (distancia, nroNodo)
     //O(log n) siendo n la cantidad de elementos de noVisitados
     
-    //O(n) * ( O(log n) + O((n-1) log n) ) = O(n^2 * log n)
+    //O(n) * O(log n) + O(m log n) = O((n+m) * log n) 
+    //se suman porque el for interno en el peor caso se recorrerá m veces incluyendo todas las iteraciones del while
 	while (!noVisitados.empty()) { //mientras hayan vértices no visitados
 
 	    //obtengo el numero de nodo de mayor prioridad, y lo desencolo
@@ -54,7 +55,7 @@ salida ListAdy::dijkstra() {
 	    noVisitados.erase(noVisitados.begin());
 	    //O(log n) siendo n la cantidad de elementos de noVisitados
 
-    	//O(n-1) * O(log n) = O((n-1) log n)
+    	//O(m) * O(log n) = O(m log n)
 	    for (t_node vecino : this->adyacencia[nroNodo]) { //para cada vecino = (nroNodo, peso)
 	        nroNodoVecino = vecino.first; //O(1)
 	        distanciaVieja = distancias[nroNodoVecino]; //O(1)

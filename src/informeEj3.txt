@@ -14,14 +14,12 @@ E_1 E_2 ... E_S
 
 AGREGAR EJEMPLOS Y SOLUCIONES DE LA CONSIGNA DEL TP
 
-2) La solución del problema 
+2) Como solución decidimos modelar el problema en un grafo y usar Dijkstra para obtener el camino mínimo de manera tal que no supere la complejidad pedida.
 
-Las estaciones y los recorridos serán modelados en un grafo en el cual los vértices representarán a las estaciones, y las aristas representarán a las vías (y el peso de cada arista representará al tiempo que se tarda en llegar de un extremo al otro).
+Las estaciones y los recorridos serán modelados en un grafo en el cual los vértices representarán a las estaciones, las aristas representarán a las vías, y el peso de cada arista representará al tiempo que se tarda en llegar de un extremo al otro.
 Este grafo será implementado como una lista de adyacencia. Es decir, una lista de N posiciones, siendo N la cantidad de estaciones. Cada posición i tendrá las estaciones vecinas alcanzables desde la estación i. Cada estación vecina j será una tupla de dos valores, el número de la estación j y lo que se tarda en llegar desde la estación i a la estación j.
 
 Luego se implementará el algoritmo de Dijkstra sobre esta lista de adyacencia. Siendo N la cantidad de estaciones, el algoritmo resolverá de manera eficiente como llegar de la estación 1 a la N de la forma más rápida.
-Para este caso en particular, el algoritmo usará un árbol binario para almacenar los nodos no visitados, ordenado por  ()
-
-- Los recorridos se guardarán en "recorridos", un vector de tuplas de tres valores A, B y C (que indican que ir de A a B tarda C segundos).
-- Se 
-A partir de "recorridos" se creará unna
+Dijkstra recorre los nodos en el orden de distancia al origen. El siguiente nodo a visitar lo elige como el más cercano al origen que no haya sido visitado anteriormente. Y al visitar un nodo actualiza la distancia de sus vecinos
+Para este caso en particular, el algoritmo usará un árbol binario para almacenar los nodos no visitados. De esta manera, se podrá extraer el nodo más cercano al origen y actualizar la prioridad de un nodo cuando se encuentre una distancia menor en complejidad logarítmica.
+El algoritmo de Dijkstra tendrá un vector de n elementos, siendo n la cantidad de estaciones, donde se almacenará
