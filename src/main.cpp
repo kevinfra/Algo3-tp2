@@ -148,7 +148,7 @@ int main(int argc, char *argv[]) {
 		}
 	}
 	else if (numeroDeEjercicio == 2) {
-		if (!experimentos) {
+		if (!experimentos && !random) {
 			int f, c;
 			cout << "Ingrese Filas, columnas:" << endl;
 			cin >> f;
@@ -247,7 +247,71 @@ int main(int argc, char *argv[]) {
 				cout << res << endl;
 			}
 		}
-		else {
+		//TODO: FIXME: ARREGLAR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		else if(experimentos){ //modo de uso: -exp <nombreDeArchivoEntrada >nombreDeArchivoSalida
+			int f = 10;
+			int c = 10;
+			std::vector< std::vector< char > > matriz;
+			for (int veces = 0; veces < 5; ++veces){
+				cout << "----" << endl;
+				cout << "matrices random nro " << veces << endl;
+				cout << "---" << endl;
+				cin >> f;
+				cin >> c;
+				matriz = cargarMatrizEj1(c, f);
+				for (int p = 0; p < 100; ++p){
+					Grafos::ListaAdy grafo(c*f*(p+1));
+					for (int j = 0; j < 100; ++j){
+						int s,t;
+						start_timer();
+						parserEj1(f, c, p, matriz, grafo, s, t);
+						int caminoMinimo = grafo.BFS(s, t, f, c);
+						double tiempo = stop_timer();
+						cout << f << " " << c << " " << p << " " << caminoMinimo << " " << tiempo << endl;
+					}
+				}
+			}
+		}
+		else if(random){
+
+			random_device rd;
+			mt19937 gen(rd());
+			uniform_int_distribution<> tam(1,1000);
+			uniform_int_distribution<> caracter4(0,9);
+			uniform_int_distribution<> dame1(0,1);
+			char puntoParedONumero[2][10] = {{'#', '1', '2', '3', '4', '5', '6', '7', '8', '9'},
+																				{'.', '.', '.', '.', '.', '.', '.', '.', '.', '.'}};
+			for (int veces = 1; veces < 101; ++veces){
+				// int f = tam(gen);
+				int f = veces;
+				// int c = tam(gen);
+				int c = veces;
+				char matriz[f][c];
+				cout << f << " " << c << endl;
+				for (int i = 0; i < f; ++i){
+					for (int k = 0; k < c; ++k){
+						if(i == 0 || k == 0 || i == f-1 || k == c -1) matriz[i][k] = '#';
+						else matriz[i][k] = puntoParedONumero[dame1(gen)][caracter4(gen)];
+					}
+				}
+				for (int i = 0; i < f; ++i){
+					for (int k = 0; k < c; ++k){
+						int paredes = 0;
+						if(i == 0 || k == 0 || i == f-1 || k == c -1) cout << matriz[i][k];
+						else if(matriz[i][k] != '.'){
+							if(matriz[i][k+1] != '.') paredes++;
+							if(matriz[i][k-1] != '.') paredes++;
+							if(matriz[i+1][k] != '.') paredes++;
+							if(matriz[i-1][k] != '.') paredes++;
+							if(paredes == 2) cout << matriz[i][k];
+							else cout << '#';
+						}
+						else if(matriz[i][k] == '.') cout << matriz[i][k];
+					}
+					cout << endl;
+				}
+			}
+
 		}
 	}
 	else if (numeroDeEjercicio == 3) {
