@@ -168,13 +168,13 @@ int main(int argc, char *argv[]) {
 						(cin >> caminoPared);
 						matriz[i][j] = caminoPared;
 				}
-			}
+			} //La entrada es guardada como una matriz.
 
 			vector<arista> aristas;
 			for (int iFilas = 0; iFilas < filasReal; ++iFilas) {
 				for (int iColumnas = 0; iColumnas < columnasReal; ++iColumnas) {
 					if (matriz[iFilas][iColumnas] == '.') {
-						nodos++;
+						nodos++; //Chequeo cuantos nodos hay
 						if (matriz[iFilas][iColumnas + 1] != '#') {
 							arista a;
 							a.inicio = iFilas * columnasReal + iColumnas;
@@ -192,6 +192,7 @@ int main(int argc, char *argv[]) {
 						}
 						encerrado = matriz[iFilas][iColumnas + 1] == '#' && matriz[iFilas + 1][iColumnas] == '#' && matriz[iFilas - 1][iColumnas] == '#' && matriz[iFilas][iColumnas - 1] == '#';
 						encerradoRes = encerradoRes || encerrado;
+						//Me fijo si hay algun nodo inalcanzable (en el caso de que haya uno solo se contempla con #nodos).
 					}
 
 					if (esNumero(matriz[iFilas][iColumnas])) {
@@ -219,7 +220,7 @@ int main(int argc, char *argv[]) {
 
 			int res = 0;
 
-			if(nodos == 0 || (nodos > 1 && encerradoRes) ){
+			if(nodos == 0 || (nodos > 1 && encerradoRes) ){ //Chequeo que sean todas paredes o haya alguno inalcanzable
 				res = -1;
 				cout << res << endl;
 			}
@@ -230,13 +231,13 @@ int main(int argc, char *argv[]) {
 				sort(aristas.begin(), aristas.end()); // ordeno las aristas por costo de menor a mayor
 
 
-				for (uint i = 0; i < aristas.size(); i++) {
+				for (uint i = 0; i < aristas.size(); i++) { //Kruskal
 					arista a = aristas[i];
 					if (find(a.inicio) != find(a.fin)) {
 						solucion.push_back(a);
 						uni(a.inicio, a.fin);
 					}
-				}
+				}	//Fin Kruskal
 				
 				for (int i = 0; i < solucion.size(); ++i)
 				{

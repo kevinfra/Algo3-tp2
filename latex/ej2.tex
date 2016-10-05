@@ -1,7 +1,6 @@
 
 \section{Ejercicio 2: Menos es más}
     % 1. Describir detalladamente el problema a resolver dando ejemplos del mismo y sus soluciones.
-	\subsection{Descripción del problema}
 
 	\begin{figure}[ht]
 		\begin{center}
@@ -10,6 +9,7 @@
 		\end{center}
 	\end{figure}
 
+	\subsection{Descripción del problema}
 	En su destino hacia la cruz en el mapa recorrieron varias salas distintas. Se dieron cuenta que en cada sala se iban encontrando con un fragmento de una tabla con un mansucrito antiguo. Por lo tanto, antes de continuar, quieren juntarlos todos.\par
 	A medida que se iban abriendo camino se dieron cuenta que ciertas paredes derribables requerían cierto esfuerzo para
 	abrirse. Este esfuerzo será representado por un $n\in{\mathbb{n}}$ donde $n < 10$. Luego, teniendo un mapa de $F*C$ (F = Filas y C = Columnas), donde se indique el $n$ en las paredes derribables, quieren encontrar cual es el mı́nimo esfuerzo que deben hacer para acceder a todas las salas. \par
@@ -38,6 +38,7 @@
 	\end{tabular}
 
 
+	%DOY UN EJEMPLO
 
 	~
 
@@ -47,26 +48,26 @@
     
     \subsection{Solución propuesta}
 
-    \subsubsection{Modelo}
+    \subsubsection{Modelado}
 
     Para resolver este problema, se pedía encontrar el mínimo esfuerzo, para pasar por todas las salas del mapa. Para esto se usó el algoritmo de Kruskal, cuyo fín es encontrar el \textbf{Arbol Generador Mínimo} dentro de un grafo, cuyo pesos en las aristas sea positivo. En nuestro caso, esto representaría el mínimo esfuerzo, para poder visitar todas las salas. Para poder usar Kruskal, modelamos el problema en grafos. Para esto, se creó una matriz de $F*C$, donde fueron guardados los caractéres del mapa pasados como parámetro de entrada.\par
     Luego se usó esta matríz para generara los nodos y las aristas. Para esto, en principio cada posicion de la matriz es un nodo, numerados según la posición dentro de la matriz ($filaDelNodoActual * cantColumnas + columnaDelNodoActual$). \par
     Una vez generada la matríz, se la vuelve a recorrer, para generar las aristas. Sea nodoActual, el caracter ubicado en la posición de la matríz en la cual estoy queriendo generar una arista,
 
     \begin{itemize}
-    	\item Si nodoActual es '\#', no hago nada.
-    	\item Caso contrario, me fijo si nodoActual es '.' o un número.
+    	\item Si nodoActual es “\#”, no hago nada.
+    	\item Caso contrario, me fijo si nodoActual es “.” o un número.
     	\begin{itemize}
-    			\item Si es un '.'. Se debe fijar en la columna siguiente de la matriz, este nodo lo llamaremos, nodoVecino.\par
- 		   		Si nodoVecino es distinto de '\#'. Genero una arista, cuyo comienzo es el número de nodoActual, su fin es el de nodoVecino, y el peso es 0. Análogo para la posición inmediata dentro de la matriz, de la fila siguiente.
-  		  		\item Si es un número. Deberá hacer lo mismo que en el caso anterior. Con la diferencia que, si uno de sus vecinos es también un número, no deberá hacer nada y que solo tendrá un vecino '.', en la columna inmediata superior o, en la fila siguiente, dentro de la matriz, y cuyo peso de la arista, será el número del nodo.
+    			\item Si es un “.”. Se debe fijar en la columna siguiente de la matriz, a este nodo lo llamaremos, nodoVecino.\par
+ 		   		Si nodoVecino es distinto de “\#”. Genero una arista, cuyo comienzo es el número de nodoActual, su fin es el de nodoVecino, y el peso es 0. Análogo para la posición inmediata dentro de la matriz, de la fila siguiente.
+  		  		\item Si es un número. Deberá hacer lo mismo que en el caso anterior. Con la diferencia que, si uno de sus vecinos es también un número, no deberá hacer nada y que solo tendrá un vecino “.”, en la columna inmediata superior o, en la fila siguiente, dentro de la matriz, y cuyo peso de la arista, será el número del nodo.
  			   	\end{itemize}
     \end{itemize} 
 
 
     Luego para el siguiente mapa,
 
-       	\begin{figure}[h]
+       	\begin{figure}[H]
 		\begin{center}
 			\includegraphics{imagenes/altoMapa.png}
 			\caption{Mapa a modelar}
@@ -76,92 +77,84 @@
 
     Queda el siguiente grafo,
     
-   	\begin{figure}[h]
+   	\begin{figure}[H]
 		\begin{center}
-			\includegraphics{imagenes/grafoOK.png}
+			\includegraphics[scale=0.5]{imagenes/grafoOK.png}
 			\caption{Grafo del mapa}
 		\end{center}
 	\end{figure}
 
 
-
     Cada una de estas aristas, es guardada en un vector de aristas.
-    Luego, este vector de aristas, es usados en el algoritmo de Kruskal, quien devolverá la suma del \textbf{Arbol Generador Mínimo}. En caso de no tener solución, es decir, no poder recorrer el mapa, devolverá -1.
-
-
+    Luego, este vector de aristas, es usados como parámetro de entrada, en el algoritmo de Kruskal, quien devolverá la suma del \textbf{Arbol Generador Mínimo}. En caso de no tener solución, es decir, no poder recorrer el mapa, devolverá -1.
 
 
 
 	\subsubsection{Implementación}\label{ej2_imp}
 
 	Habiendo introducido la idea, se detalla el comportamiento del algoritmo para
-	una entrada con $P$.
+	una entrada arbitraria.
 
-	Se presenta un pseudocódigo para tener de referencia al seguir la
-	explicación detallada a continuación:
-
-	\begin{codesnippet}
-	\begin{verbatim}
-	izquierda = verdadero
-	divisiones = 0
-	izquierdas = []
-	derechas = []
-	Mientras p != 0
-	    cociente = p / 3
-	    resto = p - (cociente *3)
-	    Si resto es 0
-	      Si no lo puse en izquierda al anterior
-	        Agrego a izquierdas la pesa con valor (3 ^ divisiones)
-	      izquierda = verdadero
-	    Si resto es 1
-	      Si anterior lo puse en izquierda
-	        Agrego a izquierdas la pesa con valor (3 ^ divisiones)
-	      Si no
-	        Agrego a derechas la pesa con valor (3 ^ divisiones)
-	    Si resto es 2
-	      Si anterio lo puse en izquierda
-	        Agrego a derechas la pesa con valor (3 ^ divisiones)
-	      izquierda = falso
-	    p = cociente
-	    divisiones += 1
-	Fin Mientras
-	Si el último no lo puse en la izquierda
-	   Agrego a izquierdas la pesa con valor (3 ^ divisiones)
-	\end{verbatim}
-	\end{codesnippet}
 
 	\begin{enumerate}
 		\item{
-			La primera parte consiste en la inicialización de valores para el algoritmo. Se tiene una variable booleana que indica en qué platillo fue colocada la última pesa para cada iteración. Esta variable se inicializa en verdadera y es utilizada para saber en qué platillos hay que colocar las pesas que siguen. Esta variable es muy importante ya que determina en qué casos se van a reemplazar dos pesas de una potencia de 3, por otras pesas y cómo hacerlo. La variable divisiones es simplemente un índice que representa la cantidad de divisiones realizadas al número P. Por último se tienen dos listas inicializadas vacías, que van a almacenar las pesas que hay que colocar en los platillos izquierdo y derecho.
+			La primera parte consiste en la inicialización de valores para el algoritmo. Se guardar la cantidad de filas y de columnas del mapa pasado por standard input. Se crea una matriz con este mismo tamaño. Luego se guardan en esta matriz, los caractéres pasados como parámetros de entrada. Se inicializan valores booleanos para chequear la posibilidad donde no haya solución.
 		}
 
 		\item{
-			El ciclo principal se ejecuta mientras P sea distinto de cero. En el cuerpo del ciclo se realiza la división del número P por 3 y se almacenan en dos variables distintas el cociente y el resto de dicha operación. Para el caso del valor del resto se tienen 3 posibilidades:
+			Luego el ciclo principal, consiste en la creación de aristas y nodo. Los nodos serán cada una de las posiciones de la matriz, enumerados desde la posición de la matriz (0,0) hasta (#filas, #columnas).
+
+			Por cada posición recorrida de la matriz se hacen los siguientes chequeos
+
 			\begin{enumerate}
 				\item{
-					EL resto es igual a 0: En este caso hay que preguntar si la anterior pesa fue colocada o no en el platillo derecho. Si fue colacada en el platillo derecho, se agrega a la lista de izquierdas la pesa que corresponde al valor (3$^{divisiones}$). La variable izquierda se actualiza con el valor verdadero, indicando que la última pesa fue colacada del lado izquierdo.
+					Si matriz[filaActual][columnaActual] es un “\#”, no hago nada.
 				}
 				\item{
-					El resto es igual a 1. En este caso tenemos dos posibilidades distintas:
-					\begin{enumerate}
-						\item{
-							La anterior pesa fue colocada del lado izquierdo, por lo tanto esta pesa también tiene que colocarse del mismo lado. Se agrega entonces a la lista de izquierdas el valor (3$^{divisiones}$).
-						}
-						\item{
-							La anterior pesa fue colocada del lado derecho, por lo tanto esta pesa también tiene que colocarse del mismo lado. Se agrega entonces a la lista de derechas el valor (3$^{divisiones}$).
-						}
-					\end{enumerate}
-				\item{
-					El resto es igual a 2: Sólo basta con fijarse si la anterior pesa fue colacada en el platillo izquierdo. De ser así, se debe agregar a derechas la pesa con el valor (3$^{divisiones}$).
+					Caso contrario, si es un “.”:
 				}
-				}
+				\begin{enumerate}
+						\item{
+							Chequeo matriz[filaActual+ 1][columna] . Si este es distinto de “\#”, creo una arista que empiece desde matriz[filaActual][columnaActual], termine en matriz[filaActual + 1][columnaActual], con peso 0. Lo mismo para matriz[filaActual][columnaActual + 1]. Además aumento la cantidad de nodos y chequeo que el mismo no esté en encerrado, guardando esto en una variable booleana \textbf{encerradoRes}
+						}
 				\end{enumerate}
+				\item{
+					Luego, si es un número:
+				}
+				\begin{enumerate}
+						\item{
+							Chequeo matriz[filaActual+ 1][columna] . Si este es un “.”, creo una arista que empiece desde matriz[filaActual][columnaActual], termine en matriz[filaActual + 1][columnaActual], con peso igual al número. Lo mismo para matriz[filaActual][columnaActual + 1]
+						}
+				\end{enumerate}
+			\end{enumerate}
 			}
 			\item{
-			    Lo último que se realiza en el ciclo es actualizar el valor de P, el cual va a contener el valor del cociente calculado al principio. De esta manera el valor de P se irá decrementando en cada ciclo hasta llegar a cero. También se suma uno al índice de divisiones.
-				Finalmente, se pregunta si la última pesa fue colocada en la lista de derechas. De ser así, se agrega a la lista de izquierdas la pesa con valor (3$^{divisiones}$).
+			    Luego se chequea que hayan más de un nodo o “.”, y en este caso, que no haya ninguno inalcanzable con encerradoRes. Si pasa que no hay nodos, o que si hay más de uno, que alguno esté encerrado, se devuelve -1 (no hay solución).
+			}
+			\item{
+			 	Si la solución es posible, se usa Kruskal con el vector de aristas, quien generará un vector solución de aristas con el \textbf{AGM}. Se sumará el peso de todas las aristas de este vector, para devolver el peso mínimo para recorrer todos los “.” del mapa.
 			}
 	\end{enumerate}
+
+	\subsubsection{Detalles Implementativos}\label{ej2_det}
+		\begin{enumerate}
+			\item{
+				Para guardar el mapa de parámetro de entrada, se usó una matriz de Char.
+			}
+			\item{
+				Para chequear que un Char es un número válido, se usó la función \textbf{isdigit(char)} perteneciente a la libreryia \textbf{ctype}, y luego se chequeó que el número este entre 1 y 9.
+			}
+			\item{
+				Para guardar las Aristas, se usó la estructura Aristas. La misma contaba con los campos Inicio, Fin y Costo.
+			}
+			\item{
+				Para usar Kruskal, se generó un vector con todas las aristas del grafo.
+			}
+			\item{
+				En Kruskal se usó la estructura de datos \textbf{Union Disjoint Set} (UDS), estructura que cuenta con las operaciones \textbf{find} y \textbf{union}.
+			}
+		\end{enumerate}
+
 
 	\subsubsection{Demostración de correctitud}
 
