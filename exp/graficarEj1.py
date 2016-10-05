@@ -6,11 +6,9 @@ import sys
 
 # Antes de usar esto, tirar en consola "./tp1 1 -exp > resEj1.txt". CUIDADO CON PISAR EL ARCHIVO ANTERIOR
 
-arr = np.genfromtxt("ej1Res.txt")
-x = [row[0] for row in arr] #tiempo en MS
-y = [row[1] for row in arr] #arq (arq,cani)
-# z = [row[2] for row in arr] #cani (arq,cani)
-# total = [row[2] for row in arr] #total (arq,cani)
+arr = np.genfromtxt("resEj1-random.txt")
+x = [row[4] for row in arr] #tiempo en MS
+y = [row[2] for row in arr] #P
 
 
 def promedio(list):
@@ -24,7 +22,6 @@ def graph(formula, x_range):
 k = 0
 listaPromedio = []
 listaPares = []
-listaPers = []
 # print(len(x))
 while k < len(x):
   subList = x[k:k+50]
@@ -36,16 +33,18 @@ while k < len(x):
 # print(listaPares)
 # np.savetxt("mydata.csv", listaPromedio, fmt='%1u' )
 
-cota = '(x*((np.log10(x)/np.log10(2))))*(5**(x**2))'
-grafCota = graph(cota, range(1,6))
+cota = '(x*100*1e5)'
+grafCota = graph(cota, range(1,30))
 
 
+promedio1NP = np.array(listaPromedio[0:99])
+promedio2NP = np.array(listaPromedio[100:199])
+promedio3NP = np.array(listaPromedio[200:299])
+promedio4NP = np.array(listaPromedio[300:399])
+promedio5NP = np.array(listaPromedio[400:499])
+psNP = np.array(listaPares[0:99])
 
-promedioNP = np.array(listaPromedio)
-arqsNP = np.array(listaPares)
-# PersNP = np.array(listaPers)
-
-deAUno = [1,2,3,4,5]
+deAUno = range(1,30)
 
 deAUno = np.array(deAUno)
 
@@ -55,18 +54,23 @@ deAUno = np.array(deAUno)
 fig = plt.figure()
 fig.patch.set_facecolor('white')
 ax1 = fig.add_subplot(111)
-pylab.plot(arqsNP, promedioNP,'ro', label= 'Resultados Ejercicio 1')
-pylab.plot(deAUno, grafCota,'b', label= 'Cota de Complejidad')
+pylab.plot(psNP, promedio1NP,'r', label= '15x31')
+pylab.plot(psNP, promedio2NP,'g', label= '49x10')
+pylab.plot(psNP, promedio3NP,'b', label= '37x31')
+pylab.plot(psNP, promedio4NP,'y', label= '33x46')
+pylab.plot(psNP, promedio5NP,'black', label= '41x43')
+pylab.plot(deAUno, grafCota,'bo', label= 'Cota de Complejidad')
 
 
-ax1.set_title("Tiempo sobre cantidad de arqueologos (y canibales)")
-ax1.set_xlabel('Cantidad de arqueólogos')
-ax1.set_xscale('linear')
+ax1.set_title("Tiempo con tamaño de matriz random sobre cantidad de paredes destructibles")
+ax1.set_xlabel('Cantidad de paredes Destructibles')
+# ax1.set_xscale('linear')
 ax1.set_ylabel('Tiempo de procesamiento en ns')
-ax1.set_yscale('log', basey=2)
+# ax1.set_yscale('linear')
+# ax1.autoscale(enable=True, axis='both', tight=None)
 
 leg = ax1.legend()
 
-leg = plt.legend( loc = 'upper left')
+leg = plt.legend( loc = 'lower right')
 
 plt.show()

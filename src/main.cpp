@@ -84,16 +84,16 @@ int main(int argc, char *argv[]) {
 			int f = 10;
 			int c = 10;
 			std::vector< std::vector< char > > matriz;
-			for (int cantidadDeMatrices = 0; cantidadDeMatrices < 4; ++cantidadDeMatrices){
+			for (int cantidadDeMatrices = 0; cantidadDeMatrices < 5; ++cantidadDeMatrices){
 				cout << "----" << endl;
 				cout << "mitad paredes en matriz de 10x10" << endl;
 				cout << "---" << endl;
 				f = 10;
 				c = 10;
 				matriz = cargarMatrizEj1(c, f);
-				for (int p = 0; p < 99; ++p){
+				for (int p = 0; p < 100; ++p){
 					Grafos::ListaAdy grafo(c*f*(p+1));
-					for (int j = 0; j < 5; ++j){
+					for (int j = 0; j < 100; ++j){
 						int s,t;
 						start_timer();
 						parserEj1(f, c, p, matriz, grafo, s, t);
@@ -103,16 +103,16 @@ int main(int argc, char *argv[]) {
 					}
 				}
 			}
-			for (int veces = 0; veces < 4; ++veces){
+			for (int veces = 0; veces < 5; ++veces){
 				cout << "----" << endl;
 				cout << "matrices random nro " << veces << endl;
 				cout << "---" << endl;
 				cin >> f;
 				cin >> c;
 				matriz = cargarMatrizEj1(c, f);
-				for (int p = 0; p < 99; ++p){
+				for (int p = 0; p < 100; ++p){
 					Grafos::ListaAdy grafo(c*f*(p+1));
-					for (int j = 0; j < 5; ++j){
+					for (int j = 0; j < 100; ++j){
 						int s,t;
 						start_timer();
 						parserEj1(f, c, p, matriz, grafo, s, t);
