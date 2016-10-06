@@ -150,6 +150,8 @@ int main(int argc, char *argv[]) {
 	}
 	else if (numeroDeEjercicio == 2) {
 		if (!experimentos && !random) {
+			int filasReal;
+			int columnasReal;
 			cin >> filasReal;
 			cin >> columnasReal;
 			cout << "Ingresar en las siguientes " << filasReal << " filas los chars '.' para indicar camino," << endl;
