@@ -152,6 +152,7 @@ int main(int argc, char *argv[]) {
 		if (!experimentos && !random) {
 			int filasReal;
 			int columnasReal;
+			cout << "ingresar filas y columnas de la matriz" << endl;
 			cin >> filasReal;
 			cin >> columnasReal;
 			cout << "Ingresar en las siguientes " << filasReal << " filas los chars '.' para indicar camino," << endl;
