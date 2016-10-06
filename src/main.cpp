@@ -225,13 +225,13 @@ int main(int argc, char *argv[]) {
 				cout << res << endl;
 			}
 			else{
-				int V = f*c;
+				int V = f*c; //Kruskal
 				init(V);
 				vector<arista> solucion;
 				sort(aristas.begin(), aristas.end()); // ordeno las aristas por costo de menor a mayor
 
 
-				for (uint i = 0; i < aristas.size(); i++) { //Kruskal
+				for (uint i = 0; i < aristas.size(); i++) {
 					arista a = aristas[i];
 					if (find(a.inicio) != find(a.fin)) {
 						solucion.push_back(a);

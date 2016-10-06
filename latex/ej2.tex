@@ -92,49 +92,126 @@
 
 	\subsubsection{Implementación}\label{ej2_imp}
 
-	Habiendo introducido la idea, se detalla el comportamiento del algoritmo para
-	una entrada arbitraria.
 
+	Habiendo introducido la idea, se detalla el comportamiento del algoritmo para
+	una entrada arbitraria. \par 
+
+	La primera parte consiste en la inicialización de valores para el algoritmo. Se guardar la cantidad de filas y de columnas del mapa pasado por standard input. Se crea una matriz con este mismo tamaño. Luego se guardan en esta matriz, los caractéres pasados como parámetros de entrada. Se inicializan valores booleanos para chequear la posibilidad donde no haya solución.
+
+	\begin{codesnippet}
+    \begin{verbatim}
+    for i = 0 .. filas
+        for j = 0 .. columnas
+            matriz[i][j] <-- (cin >> caminoPared);
+        end
+    end
+    \end{verbatim}
+    \end{codesnippet}
+
+	Luego el ciclo principal, consiste en la creación de aristas y nodo. Los nodos serán cada una de las posiciones de la matriz, enumerados desde la posición de la matriz (0,0) hasta (\#filas, \#columnas) cada arista creada será guardada en un vector de aristas. Por cada posición recorrida de la matriz se hacen los siguientes chequeos
 
 	\begin{enumerate}
 		\item{
-			La primera parte consiste en la inicialización de valores para el algoritmo. Se guardar la cantidad de filas y de columnas del mapa pasado por standard input. Se crea una matriz con este mismo tamaño. Luego se guardan en esta matriz, los caractéres pasados como parámetros de entrada. Se inicializan valores booleanos para chequear la posibilidad donde no haya solución.
+			Si matriz[filaActual][columnaActual] es un “\#”, no hago nada.
 		}
-
 		\item{
-			Luego el ciclo principal, consiste en la creación de aristas y nodo. Los nodos serán cada una de las posiciones de la matriz, enumerados desde la posición de la matriz (0,0) hasta (#filas, #columnas).
-
-			Por cada posición recorrida de la matriz se hacen los siguientes chequeos
-
-			\begin{enumerate}
+			Caso contrario, si es un “.”:
+		}
+		\begin{enumerate}
 				\item{
-					Si matriz[filaActual][columnaActual] es un “\#”, no hago nada.
+					Chequeo matriz[filaActual+ 1][columna] . Si este es distinto de “\#”, creo una arista que empiece desde matriz[filaActual][columnaActual], termine en matriz[filaActual + 1][columnaActual], con peso 0. Lo mismo para matriz[filaActual][columnaActual + 1]. Además aumento la cantidad de nodos y chequeo que el mismo no esté en encerrado, guardando esto en una variable booleana \textbf{encerradoRes}
 				}
+		\end{enumerate}
+		\item{
+			Luego, si es un número:
+		}
+		\begin{enumerate}
 				\item{
-					Caso contrario, si es un “.”:
-				}
-				\begin{enumerate}
-						\item{
-							Chequeo matriz[filaActual+ 1][columna] . Si este es distinto de “\#”, creo una arista que empiece desde matriz[filaActual][columnaActual], termine en matriz[filaActual + 1][columnaActual], con peso 0. Lo mismo para matriz[filaActual][columnaActual + 1]. Además aumento la cantidad de nodos y chequeo que el mismo no esté en encerrado, guardando esto en una variable booleana \textbf{encerradoRes}
+					Chequeo matriz[filaActual+ 1][columna] . Si este es un “.”, creo una arista que empiece desde matriz[filaActual][columnaActual], termine en matriz[filaActual + 1][columnaActual], con peso igual al número. Lo mismo para matriz[filaActual][columnaActual + 1]
 						}
-				\end{enumerate}
-				\item{
-					Luego, si es un número:
-				}
-				\begin{enumerate}
-						\item{
-							Chequeo matriz[filaActual+ 1][columna] . Si este es un “.”, creo una arista que empiece desde matriz[filaActual][columnaActual], termine en matriz[filaActual + 1][columnaActual], con peso igual al número. Lo mismo para matriz[filaActual][columnaActual + 1]
-						}
-				\end{enumerate}
-			\end{enumerate}
-			}
-			\item{
-			    Luego se chequea que hayan más de un nodo o “.”, y en este caso, que no haya ninguno inalcanzable con encerradoRes. Si pasa que no hay nodos, o que si hay más de uno, que alguno esté encerrado, se devuelve -1 (no hay solución).
-			}
-			\item{
-			 	Si la solución es posible, se usa Kruskal con el vector de aristas, quien generará un vector solución de aristas con el \textbf{AGM}. Se sumará el peso de todas las aristas de este vector, para devolver el peso mínimo para recorrer todos los “.” del mapa.
-			}
+		\end{enumerate}
 	\end{enumerate}
+    
+
+    \begin{codesnippet}
+    \begin{verbatim}
+    for i = 0 .. filas
+        for j = 0 .. columnas
+           if (matriz[i][j] == '.')
+                nodos++
+                if (matriz[i][j+1] != '#')
+                     creo arista a
+                     a.inicio <-- matriz[i][j]
+                     a.fin <-- matriz[i][j+1]
+                     a.peso <-- 0
+                     aristas.push_back(a)
+                endif
+                if (matriz[i+1][j] != '#')
+                     creo arista a
+                     a.inicio <-- matriz[i][j]
+                     a.fin <-- matriz[i+1][j]
+                     a.peso <-- 0
+                     aristas.push_back(a)
+                endif
+           endif
+           if (esNumero(matriz[i][j]))
+                if(matriz[i][j + 1] == '.')
+                     creo arista a
+                     a.inicio <-- matriz[i][j]
+                     a.fin <-- matriz[i][j+1]
+                     a.peso <-- matriz[i][j]
+                     aristas.push_back(a)
+                endif
+                if(matriz[i + 1][j] == '.')
+                     creo arista a
+                     a.inicio <-- matriz[i][j]
+                     a.fin <-- matriz[i+1][j]
+                     a.peso <-- matriz[i][j]
+                     aristas.push_back(a)
+                endif
+           endif
+       end
+   end
+   \end{verbatim}
+   \end{codesnippet}
+
+    Luego se chequea que hayan más de un nodo o “.”, y en este caso, que no haya ninguno inalcanzable con encerradoRes. Si pasa que no hay nodos, o que si hay más de uno, que alguno esté encerrado, se devuelve -1 (no hay solución).
+
+   \begin{codesnippet}
+   \begin{verbatim}
+    if(nodos == 0 || (nodos > 1 && encerradoRes))
+    	res <-- -1
+    	cout << res << endl;
+
+    endif
+   \end{verbatim}
+   \end{codesnippet}
+
+ 	Si la solución es posible, se usa Kruskal con el vector de aristas, quien generará un vector solución de aristas con el \textbf{AGM}. Se sumará el peso de todas las aristas de este vector, para devolver el peso mínimo para recorrer todos los “.” del mapa.
+
+ 	\begin{codesnippet}
+    \begin{verbatim}
+       int V = f*c; //Kruskal
+	   init(V);
+	   sort(aristas.begin(), aristas.end())
+       vector<arista> solucion;
+       for i = 0 .. aristas.size() 
+           arista a = aristas[i]
+           if (find(a.inicio) != find(a.fin))
+                solucion.push_back(a)
+                union(a.inicio, a.fin)
+           endif
+       end //Fin Kruskal
+    	
+    	res <-- 0
+
+       for i = 0 .. solucion.size()
+           res += solucion[i].costo
+       end
+
+   \end{verbatim}
+   \end{codesnippet}
+
 
 	\subsubsection{Detalles Implementativos}\label{ej2_det}
 		\begin{enumerate}
@@ -142,7 +219,7 @@
 				Para guardar el mapa de parámetro de entrada, se usó una matriz de Char.
 			}
 			\item{
-				Para chequear que un Char es un número válido, se usó la función \textbf{isdigit(char)} perteneciente a la libreryia \textbf{ctype}, y luego se chequeó que el número este entre 1 y 9.
+				Para chequear que un Char es un número válido, se usó la función \textbf{isdigit(char)} perteneciente a la librería \textbf{ctype}, y luego se chequeó que el número este entre 1 y 9.
 			}
 			\item{
 				Para guardar las Aristas, se usó la estructura Aristas. La misma contaba con los campos Inicio, Fin y Costo.
@@ -151,7 +228,7 @@
 				Para usar Kruskal, se generó un vector con todas las aristas del grafo.
 			}
 			\item{
-				En Kruskal se usó la estructura de datos \textbf{Union Disjoint Set} (UDS), estructura que cuenta con las operaciones \textbf{find} y \textbf{union}.
+				En Kruskal se usó la estructura de datos \textbf{Disjoint Set Union} (DSU), estructura que cuenta con las operaciones \textbf{find} y \textbf{union}.
 			}
 		\end{enumerate}
 
@@ -159,30 +236,22 @@
 	\subsubsection{Demostración de correctitud}
 
 	Habiendo visto cómo funciona el algoritmo desarrollado, se procede a
-	justificar por qué devuelve una solución. Para esto se explicará el algoritmo en base a las justificaciones matemáticas realizadas en la solución propuesta.
-	\subsubsection*{Correctitud de ciclo}
+	justificar por qué devuelve una solución. Para esto, se explicará detalladamente, porque el modelado es correcto. Dado que para la segunda parte, se usa Kruskal, algoritmo que definitivamente, es correcto.
 
-	Lo que se va a demostrar a continuación es que el ciclo principal termina y calcula la solución al problema.
+	\subsubsection*{Correctitud de Modelado}
 
-	El ciclo se ejecuta mientras P sea distinto de cero. Es decir termina cuando P es 0 y esto ocurre ya que lo que se hace en el ciclo es dividir el número P por 3 y reemplazar P por el resultado (cociente) de esta división en cada iteración. Eventualmente el cociente va a ser cero, por los teoremas de división entera y de desarrollo en base $d$. Lo que se está haciendo es utilizar el algoritmo de división para obtener el desarrollo en base 3 del número $P$. Los restos en cada iteración son los que indican que símbolos hay que utilizar para la representación del número en esa base. En este caso no interesa obtener la representación del número en base 3, sino trabajar con los símbolos en su desarrollo (restos). El resto de la división sólo puede ser 0, 1 o 2 (por el teorema de la división entera).
+	A la hora de modelar un grafo en base a la matriz de entrada, se decidió modelarlo desde la posición de la matriz (0,0) hasta (n,m) siendo n, cantidad de filas y m, cantidad de columnas. El único caso el cual tomamos una decisión la cual se debe demostrar correctitud, es para los nodos en donde hay un número. Para estos casos, por restricciones del enunciado, cada nodo que contiene un número, puede tener solo una posibilidad. Es decir, sea (i,j) la posición del nodo con número, su vecino al cual puede acceder (es decir, la posición de la matriz con un nodo que contiene un “.”) podría ser (i,j+1) o (exclusivo) (i+1,j). \par
 
-	A continuación se analiza la parte fundamental del algoritmo que consiste en la identificación de qué pesas utilizar y en qué platillos colocarlas dependiendo del resto. Se tienen las siguientes posibilidades: 
+	Luego, según a cual se puede acceder, se crea una arista con el peso igual al número del nodo. Esta arista comienza desde el nodo que contiene el número y finaliza en su vecino accesible. 
 
-	\begin{enumerate}
-		\item{
-			Resto == 0. En este caso, si la última pesa fue colocada del lado izquierdo no hay que realizar nada. Esto es porque el anterior dígito en el desarrollo era o bien otro cero o un 1. Por lo tanto no es necesario utilizar esta pesa para compensar una de un valor menor que no pudo ser utilizada porque se estaban usando dos (esto fue explicado en la solución propuesta). En cambio si la anterior pesa fue colocada del lado derecho es porque el anterior dígito en el desarrollo del número era un 2. En este caso, hay que utilizar esta pesa, por lo que se agrega a la lista de izquierdas el valor de la potencia de 3 correspondiente. Independientemente de si se utilizó esta pesa o no, la variable izquierda se actualiza con el valor verdadero, ya que el hecho de que no se use una pesa de una determinada potencia también se toma como que se 'usó'' la pesa de la izquierda. Esto es porque en el caso de que el siguiente dígito en el desarrollo sea un uno, se tiene que poder distinguir si el anterior fue un 0 o un 2, lo cual no se podría realizar si no se actualiza el valor de esta variable. En la explicación del caso del resto 1 se puede entender mejor esta conclusión. 
-		}
-		\item{
-			Resto == 1. En este caso siempre hay que agregar una pesa. Si el valor de la variable izquierda es verdadero (esto es porque el anterior dígito fue un 0 o un 1) hay que agregar esta potencia de 3 a la lista de izquierda. En el caso contrario significa que el anterior dígito era un 2 y como se demostró en la solución propuesta hay que colocar esta pesa en el lado derecho, ya que si el anterior fue un 2 hay que tomar este dígito, lo que lo convertiría de un 1 a un 2, y por lo tanto hay que aplicar nuevamente la fórmula propuesta. Por lo tanto en este último caso se agrega la potencia de 3 correspodiente en la pesa derecha. El valor de la variable izquierda no es necesario actualizarlo ya que si se agrega a la lista de izquierdas hay que modificarlo por verdadero (lo cual ya ocurre porque se agrega solamente a izquierdas si es verdadero) y si se agrega a la lista de derechas hay que modificarlo por falso (lo cual ya ocurre porque se agrega solamente a derechas si es falso).
-		}
-		\item{
-			Resto == 2. En este caso se usa también la idea planteada en la solución al problema. Se agrega a la lista de derechas la pesa con el valor de la potencia de 3 correspondiente solamente si la anterior fue colocada en el lado izquierdo (es decir el anterior dígito es un cero o un uno) ya que si el anterior era un 2 no hay que realizar nada (por lo visto en la demostración de la solución). Finalmente se actualiza el valor de izquierda y se pone en falso siempre, ya que es necesario para el siguiente dígito en el desarrollo, ya que como se vió si el siguiente es cero va a haber que tomar la siguiente pesa y si es un 1 va a haber que colocar la pesa en el lado derecho.	
-		}
-	\end{enumerate}
+	Esto genera, además de las aristas sin peso, aquellas que representarán el esfuerzo para romper una pared.\par
 
-	Como el ciclo finaliza cuando P es igual a cero, se puede dar el caso de que el último dígito en el desarrollo del número en base 3 (el más significativo) sea un 2. Por lo tanto y sabiendo que no sigue ningún dígito más, lo que hay que hacer si se da este caso es tomar esta pesa por lo visto en la solución.
+	Si bien, se toma una decisión al chequear desde el nodo con número hacia sus vecinos (i, j+1) o (i+1,j), pues podría ser desde un nodo (i,j) hacia (i, j-1) o (i-1,j). Por un tema de equivalencia, se comparó con los vecinos (i, j+1) o (i+1,j). Esta equivalencia es dada, pues, al generar una arista con peso, significa que existe la posibilidad que se necesite ir desde la pared con el número, hacia un sector accesible con un “.”. Pero, dado el caso que sea necesario atravesar esa pared, al algoritmo de Kruskal, le es indiferente, si la arista va desde el nodo con un número (i,j) a (i, j-1) o a (i,j+1). Si es necesario atravesar esa pared, lo hará de izquierda a derecha o de derecha a izquierda. De otra manera, si no es necesario no la atraviesa, pues hay un camino para acceder a los extremos de la arista con peso, de una manera óptima, o sea, con menor peso. Análogo es para los casos donde los vecinos son los inmediatos superiores o inferiores o sea (i-1, j) o (i+1,j).
 
-	En conclusión lo que hace el algoritmo es dividir iterativamente el número por 3, obteniendo de esta forma su desarrollo en base 3 y al mismo tiempo colocando las pesas correspondientes en base a los restos obtenidos (teorema de desarrollo en base $d$). No es necesario obtener primero la representación del número en la base y después aplicar la solución; se puede realizar mientras se obtiene, tomando decisiones en base al resto de la división en cada iteración. La idea propuesta garantiza que el algoritmo siempre va retornar una solución por lo visto en la sección de "Solución". Las decisiones que se toman con los restos son las inferidas por la solución propuesta: si el dígito es 0, no se toma esa pesa salvo que el anterior sea un 2. si el dígito es 1, si el anterior es 0 o 1 se toma esa pesa, sino se resta la pesa; finalmente si el dígito es 2, si anterior es 2 no se toma ninguna acción y si no se resta la pesa. Además el algoritmo de división garantiza que las pesas que se toman, van a estar ordenadas de menor a mayor cumpliendo con la restricción del problema.
+	Luego, dada esta decisión, es generado un grafo, donde las aristas entre dos nodos “.”, tienen peso 0, y las aristas desde un número hacia su vecino tienen el peso correspondiente al número y representan romper la pared.
+
+	Finalmente, el algoritmo de Kruskal, va a buscar llegar a todos los nodos, con la menor cantidad de roturas de pared. O sea, pasando por las aristas con menor peso. En términos de grafos. Dado el grafo conexo G generado a partir de la matriz de entrada, cada una de las aristas tendrá un peso no negativo. Dada esta precondición es posible usar Kruskal, algoritmo que devolverá el \textbf{AGM} de G. Es decir, por que aristas se debe pasar para llegar a todos los espacios del mapa o nodos del grafo. Luego la suma de los pesos de estas aristas, es igual al resultado devuelto. En el caso que G sea disconexo, el algoritmo devolverá -1, pues significa, que existe un espacio del mapa, o un nodo del grafo, donde es imposible llegar.
+
 
     % 3. Deducir una cota de complejidad temporal del algoritmo propuesto y justificar por qué el algoritmo cumple la cota dada. Utilizar el modelo uniforme.
 	\subsection{Complejidad teórica}
@@ -191,18 +260,28 @@
 	referencia a la sección \ref{ej2_imp} donde se posée el pseudocódigo junto a
 	su explicación.
 
-	El algoritmo tiene una complejidad temporal de $\ord(log(n))$, por lo tanto es
-	logarítmico y cumple con la restricción de complejidad del enunciado. Esto se justifica con el hecho de que el algoritmo posee un ciclo
-	principal que se ejecuta mientras $P$ sea distinto de cero, es decir desde el número $P$ hasta el número 0. En cada iteracion el tamaño de $P$ se reduce a un tercio, ya que se divide por 3. Por lo tanto el ciclo se ejecuta la cantidad de símbolos necesarios para obtener el número $P$ en base 3. Si $P$ requiere de $n$ símbolos es que:
+	El algoritmo tiene una complejidad temporal de $\ord(fc*log(fc))$, siendo f = cantidad de filas y c = cantidad de columnas, del mapa.
+	Por lo tanto cumple con la restricción de complejidad del enunciado. \par
 
-	\newline
-	$d^{n-1} <= P < d^n$
+	Esta complejidad es dada por los siguiente
 
-	\newline
-	es decir, $n -1 <= log_3(P) < n$, lo que implica que $[log_3(P)] = n - 1$ y por lo tanto $n = [log_3(P)] + 1$
+	\begin{itemize}
+	 \item El armado de la matriz principal de Chars, es un ciclo que recorre una vez, cada posición del mapa y guarda el Char en una matriz de F*C. Esto es $\ord(FC)$
+	 \item Luego para armar cada una de las aristas, vuelve a recorrer la matriz de Char, y crea las aristas. Recorrer nuevamente la matriz es $\ord(FC)$, mientras que crear la arista e insertarla en el vector es $\ord(1)$. Luego este ciclo es $\ord(FC) * \ord(1) = \ord(FC)$.
+	 \item Chequear que haya solución, es hacer comparaciones booleanas en $\ord(1)$.
+	 \item Luego Kruskal, dado que usamos una estructura DSU, la complejidad resultante es $\ord(V + E*log V )$, siendo E la cantidad de aristas y V las de vértices. Como en el peor de los casos cada posición del mapa es un nodo, entonces $\ord(V) = \ord(FC)$, entonces $\ord(V + E log V ) = \ord(FC + E*log FC)$. Pero en el peor de los casos, cada vértice esta conectado a sus 4 vecinos dentro de la matriz. Esto es, que en el peor de los casos, cada vértice tiene 4 aristas. O sea $\ord(E) = \ord(4FC)$. Luego $\ord(V + E log V ) = \ord(FC + 4FC*log FC)$.
+	 \item Recorrer el vector solución, en el peor caso, tiene todas las aristas, es decir, $\ord(4FC) = \ord(FC)$.
 
+	\end{itemize}
 
-	Dentro del ciclo sólo se hacen comparaciones que tienen un costo asociado de $\ord(1)$, una división, una multiplicación y una resta de enteros (costo $\ord(1)$), una asignación y una suma, y se agregan elementos a una lista (todas estas operaciones tambien en $\ord(1)$). Por lo tanto se concluye que la complejidad del ciclo es $\ord(log(n))$. Fuera del ciclo sólo se realizan incializaciones de variables $\ord(1)$ al principio del algoritmo y una comparación e inserción en una lista al final también en $\ord(1)$. Por álgebra de órdenes de funciones, la complejidad temporal resultante del algoritmo es $\ord(log(n))$. 
+	Finalmente, hacer dos ciclos en la misma matriz y luego hacer Kruskal y finalmente recorrer el vector solución de aristas, implica que el algoritmo tiene complejidad\par
+
+	$\ord(FC + FC + 1 + FC + 4FC*log FC) =$
+	$\ord(FC + FC*log FC) =$
+	$\ord(FC*log FC)$
+
+	Es decir, la complejidad final del algoritmo es $\ord(FC*log FC)$.
+
 
     % 4. Dar un código fuente claro que implemente la solución propuesta. Se deben incluir las partes relevantes del código como apéndice del informe impreso entregado.
 
