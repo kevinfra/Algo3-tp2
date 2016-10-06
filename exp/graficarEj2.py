@@ -33,14 +33,14 @@ while k < len(x):
 # print(listaPares)
 # np.savetxt("mydata.csv", listaPromedio, fmt='%1u' )
 
-cota = '(x*100*1e5)'
-grafCota = graph(cota, range(1,30))
+cota = '((x*x)*(np.log10(x*x))*1e3)'
+grafCota = graph(cota, range(1,120))
 
 
 promedio1NP = np.array(listaPromedio)
 tamanosMatricesNP = np.array(listaPares)
 
-deAUno = range(1,30)
+deAUno = range(1,120)
 
 deAUno = np.array(deAUno)
 
@@ -51,7 +51,7 @@ fig = plt.figure()
 fig.patch.set_facecolor('white')
 ax1 = fig.add_subplot(111)
 pylab.plot(tamanosMatricesNP, promedio1NP,'r', label= 'Matriz de tamaño variable')
-# pylab.plot(deAUno, grafCota,'bo', label= 'Cota de Complejidad')
+pylab.plot(deAUno, grafCota,'bo', label= 'Cota de Complejidad')
 
 
 ax1.set_title("Tiempo con sobre matrices cuadradas de tamaño linealmente creciente")
