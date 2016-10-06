@@ -54,8 +54,8 @@ fig = plt.figure()
 fig.patch.set_facecolor('white')
 ax1 = fig.add_subplot(111)
 pylab.plot(tamanosMatricesNP, promedio1NP,'r', label= 'Muchas paredes destructibles')
-pylab.plot(tamanosMatricesNP, promedio2NP,'g', label= 'Solo paredes indestructibles')
-pylab.plot(tamanosMatricesNP, promedio3NP,'black', label= 'Sin paredes')
+pylab.plot(tamanosMatricesNP, promedio2NP,'g', label= 'Sin Paredes')
+pylab.plot(tamanosMatricesNP, promedio3NP,'black', label= 'Solo paredes indestructibles')
 pylab.plot(deAUno, grafCota,'bo', label= 'Cota de Complejidad')
 
 
