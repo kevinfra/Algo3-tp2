@@ -5,7 +5,7 @@
 #include <tuple>
 #include <set>
 
-#define INFINITO 999999
+#define INFINITO 1001 //C <= 10^3
 
 using namespace std;
 
