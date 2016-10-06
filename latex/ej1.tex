@@ -31,7 +31,7 @@
             Para poder manejar correctamente el grafo, se creó la clase ListaAdy con namespace Grafos, la cual modela un grafo representado con listas de adyacencias. Las únicas operaciones que tiene la clase son el constructor, que recibe la cantidad de nodos totales, agregarArista, que recibe dos enteros $u,v$ y agrega $v$ a la lista de adyacencias de $u$, y BFS que recibe el número de nodo origen $s$, el número de origen de destino $t$, y la cantidad $f$ de filas y $c$ de columnas.
             La forma en que se almacenan las listas de adyacencias es con un vector de vectores de enteros, tipo que se provee de la librería estándar de C++.
 
-            Normalmente, BFS solo necesitaría el nodo de origen y de destino, y almacenaría todos las posibles distancias de caminos que hay entre ambos nodos. Sin embargo, agregamos estos dos valores para el algoritmo termine la primera vez que encuentre el nodo destino. Esto es por cómo funciona BFS: Al recorrer todos los nodos según su distancia al origen, siempre se analizan los nodos que solo están a distancia 1 más que el nodo vecino "padre" (o sea, el nodo que tenía como vecino al que se está analizando y por el cual se agregó a la cola de revisión). Ergo, si existe un camino entre $s$ y $t$, BFS encontrará el más corto antes que cualquier otro y por eso es que podemos terminar su ejecución cuando eso pase. En peor caso, no existirá un camino entre $s$ y $t$, y BFS recorrerá todos los nodos.
+            Normalmente, BFS solo necesitaría el nodo de origen y de destino, y almacenaría todos las posibles distancias de caminos que hay entre ambos nodos. Sin embargo, agregamos estos dos valores para que el algoritmo termine la primera vez que encuentre el nodo destino. Esto es por cómo funciona BFS: Al recorrer todos los nodos según su distancia al origen, siempre se analizan los nodos que solo están a distancia 1 más que el nodo vecino "padre" (o sea, el nodo que tenía como vecino al que se está analizando y por el cual se agregó a la cola de revisión). Ergo, si existe un camino entre $s$ y $t$, BFS encontrará el más corto antes que cualquier otro y por eso es que podemos terminar su ejecución cuando eso pase. En peor caso, no existirá un camino entre $s$ y $t$, y BFS recorrerá todos los nodos.
 
             El algoritmo que resuelve el problema puede separarse en dos partes: Una se encarga de leer el mapa de entrada y construir el grafo dirigido tridimensional y la otra, es el BFS que busca verdaderamente la solución.
             En la primera parte recorremos el mapa que se encuentra guardado en una matriz de \textbf{char} $P+1$ veces, para así poder construir los $p+1$ niveles del grafo y poder conectar cada nodo con sus respectivos vecinos, y para poder verificar que el mapa pasado sea válido y buscar los nodos marcados con la $o$ y la $x$.
@@ -103,28 +103,91 @@ BFS(enteros : s, t, f, c)
     % 5. Realizar una experimentación computacional para medir la performance del programa implementado. Usar un conjunto de casos de test en función de los parámetros de entrada, con instancias aleatorias e instancias particulares (de peor/mejor caso en tiempo de ejecución, por ejemplo). Presentar en forma gráfica una comparación entre los tiempos medidos y la complejidad teórica calculada y extraer conclusiones.
     \subsection{Experimentación}
 
-	Para poder mostrar que la cota propuesta en la complejidad temporal funciona para el algoritmo que resuelve este problema, realizamos experimentos con cantidades de personas entre 1 y 7 pero siempre con mayor o igual número de arqueólogos que de caníbales. Los casos de prueba pueden observarse en la tabla que se encuentra en el anexo de este informe.
+	Para poder mostrar que la cota propuesta en la complejidad temporal funciona para el algoritmo que resuelve este problema, realizamos experimentos con diferentes matrices y diferentes cantidades de paredes que se pueden destruir.
 
-  Los resultados obtenidos fueron plasmados en el siguiente gráfico. El mismo es la representación del tiempo en funcion de la cantidad de arqueólogos. También se muestra la funcion propuesta como cota de complejidad temporal.
+  Primero se realizó un experimento con 5 matrices de tamaño 10x10. Una matriz estaba compuesta por todas paredes excepto el origen y el destino, otra tenia la mitad de paredes horizontales respecto del total de nodos, otra la mitad de paredes verticales, otra la mitad de paredes diagonales y la última no contenía ninguna pared y el origen y el destino estaban uno al lado del otro. Se optó por realizarlo de esta forma ya que se pueden probar casos límite, que son cuando se tienen que romper todas paredes, mientras que en el lado opuesto no hay que romper ninguna y el destino está a un sólo nodo de distancia del origen. Por como esta implementado el algoritmo se esperó que en los casos en donde hay que romper mucha más cantidad de paredes tarden más en ejecutarse que los que no hay que romper ninguna y además está más cerca el nodo destino del origen. Los esquemas de las matrices que se utilizaron para realizar esta parte del experimento son los siguientes:
+
+ \begin{codesnippet}
+            \begin{verbatim}
+o # # # # # # # # #
+# # # # # # # # # #
+# # # # # # # # # #
+# # # # # # # # # #
+# # # # # # # # # #
+# # # # # # # # # #
+# # # # # # # # # #
+# # # # # # # # # #
+# # # # # # # # # #
+# # # # # # # # # x
+
+o # . # . # . # . #
+. # . # . # . # . #
+. # . # . # . # . #
+. # . # . # . # . #
+. # . # . # . # . #
+. # . # . # . # . #
+. # . # . # . # . #
+. # . # . # . # . #
+. # . # . # . # . #
+. # . # . # . # . x
+
+o # # # # # # # # #
+. . . . . . . . . .
+# # # # # # # # # #
+. . . . . . . . . .
+# # # # # # # # # #
+. . . . . . . . . .
+# # # # # # # # # #
+. . . . . . . . . .
+# # # # # # # # # #
+. . . . . . . . . x
+
+o # . # . # . # . #
+# . # . # . # . # .
+. # . # . # . # . #
+# . # . # . # . # .
+. # . # . # . # . #
+# . # . # . # . # .
+. # . # . # . # . #
+# . # . # . # . # .
+. # . # . # . # . #
+# . # . # . # . # x
+
+o x . . . . . . . .
+. . . . . . . . . .
+. . . . . . . . . .
+. . . . . . . . . .
+. . . . . . . . . .
+. . . . . . . . . .
+. . . . . . . . . .
+. . . . . . . . . .
+. . . . . . . . . .
+. . . . . . . . . .
+
+\end{verbatim}
+            \end{codesnippet}
+
+  El expermiento se corrío para cada matriz teniendo en cuenta que se pueden romper desde 0 hasta 99 paredes. Es decir, en total se examinaron 500 casos (100 para cada una de las cinco matrices). Además para cada caso con una determinada cantidad de paredes, se repitió el mismo experimento 100 veces para luego tomar el promedio y obtener un resultado más representativo del tiempo que tarda cada caso. Los primeros casos en los que se podían romper pocas paredes fueron los que menos tiempo de ejecución demandaron.
+  Los resultados obtenidos fueron plasmados en el siguiente gráfico. El mismo es la representación del tiempo en funcion de la cantidad de paredes que se pueden romper para cada una de las cinco matrices consideredas. También se muestra la funcion propuesta como cota de complejidad temporal.
 
   \begin{figure}[H]
       \begin{center}
-        \includegraphics[width=0.7\columnwidth]{imagenes/exp1Ej1-1a7.jpeg}
+        \includegraphics[width=0.7\columnwidth]{../exp/ej1tamanosFijos.jpeg}
         \caption{}
       \end{center}
   \end{figure}
 
-  Para cada valor en $x$ puede observarse que a medida que crece, hay más puntos en $y$ para el mismo $x$. Esto es porque si bien el eje X es la cantidad de arqueólogos, también varía la cantidad de caníbales por lo que el tiempo que toma cada ejecución del programa también depende de este valor, pero como se aclaró en la sección de complejidad, el número de caníbales va de 0 a la cantidad de arqueólogos (porque en caso contrario el programa termina en seguida a menos que no haya arqueólogos, caso que se verá más adelante) lo cual implica que nuestro tamaño de entrada $n$ (la cantidad de arqueólogos) es en realidad a lo sumo $2n$, pero en términos de complejidad el $2$ es una constante que podemos sacar.
-  De acuerdo a la tabla proporcionada, los pares (arqueólogo, caníbal) que toman más tiempo son \texttt{(1,1), (2,2), (3,2), (4,2), (5,3), (6,3), (7,3)}. Sin embargo, podemos notar como la cota de complejidad cumple, aunque no de manera ajustada, su función para estos experimentos.
+  Para cada matriz puede observarse que a medida que crece la cantidad de paredes que se pueden derribar, también crece el tiempo que toma cada ejecución del programa, que era el comportamiento que se esperaba. Si bien el algoritmo de BFS corta la ejecución en cuanto encuentra el destino (en caso de poder encontrarse), no se observa una mejoría cuando se utiliza una cantidad mayor de paredes que se pueden destruir a la cantidad de nodos, debido a que en la construcción del grafo se toman en cuenta todos los niveles (cantidad de paredes), por lo que esa parte del algoritmo ya toma $O(FCP)$. Por esta razón es que el tiempo de ejecución no se mantiene constante una vez que se toma una cantidad de paredes mayor al total de nodos. El algortimo como se puede observar también tarda menos en ejecutar cuando en la matriz no hay ninguna pared y el origen y el destino están uno al lado del otro, como se esperaba. Este es el mejor caso. Los casos en los cuales había una cantidad de paredes igual a la mitad de nodos y éstas estaban en posiciones horizontales y verticales fueron aún peor que en el caso que son todas paredes. Esto puede explicarse debido a que el algoritmo de BFS inspecciona algunos vecinos que en el caso de que son todas paredes no puede ya que no tiene ningún camino que pueda pasar sin romper paredes.
+  Podemos notar como la cota de complejidad cumple, aunque no de manera exacta, su función para estos experimentos.
 
 
-  Para el caso en que no haya arqueólogos y solo haya caníbales, esperábamos que la resolución del problema sea más rápida que en los casos que hay más arqueólogos que caníbales. Probamos con cantidades de caníbales entre 1 y 200 y en el próximo grafico se ilustran los resultados de tiempo en función del número de personas.
+  Luego se realizó otro tipo de experimento en el cual se utilizaron otras cinco matrices pero con tamaño y paredes dispuestas de manera aleatoria. Estas matrices fueron generadas usando la librería random de la STL con distribución uniforme. Este experimento se corrió bajo las mismas circunstancias que el otro experimento. Se corrieron 100 casos para cada una de las matrices, considerando que se pueden romper desde 0 a 99 paredes. Además también cada uno de los casos se repitió 100 veces y se tomó el promedio. Los resultados que se obtuvieron son los siguientes:
 
   \begin{figure}[H]
       \begin{center}
-        \includegraphics[width=0.7\columnwidth]{imagenes/exp2Ej1.jpeg}
+        \includegraphics[width=0.7\columnwidth]{../exp/ej1tamanosRandom.jpeg}
         \caption{}
       \end{center}
   \end{figure}
 
-  Notamos como el tiempo que toma a mayor cantidad de caníbales sin arqueólogos crece mucho más lento que para los casos con arqueólogos. Esto se debe a que por un lado, las ramas en que cruzan arqueologos no se prueban, sino que solo se intenta que crucen 1 o 2 caníbales. Luego, la cantidad de estados posibles se reduce a 2 veces la cantidad de formas que se pueden distribuir los caníbales en ambos lados del puente (una por cada lado de la linterna), que es igual a $2*(n^2)$; reducimos la cota de complejidad a $O(n $log$ n*2^{n^2})$. El cambio no es muy grande debido a que las cotas no están totalmente ajustadas, pero funcionan para dar una idea del peor caso acotado por arriba.
+  Se observa también como el tiempo de ejecución aumenta a medida de que se pueden romper más paredes para cada una de las matrices. Por lo general, los casos en los cuales la matriz tiene menos filas y columnas presentan un tiempo de ejecución menor pero pueden observarse que igualmente también depende de la cantidad de paredes que haya en la matriz. Para estos casos, la cota propuesta acota mejor de manera superior a todos los casos.
