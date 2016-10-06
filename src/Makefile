@@ -12,7 +12,7 @@ INCDIR= .
 
 # Agregar acá los archivos .cpp a compilar [COMPLETAR]
 
-SOURCES=main.cpp grafos.cpp grafos2.cpp grafos3.cpp ejercicio1.cpp
+SOURCES=main.cpp grafos.cpp grafos2.cpp grafos3.cpp ejercicio1.cpp ejercicio2.cpp
 
 
 # Objetos que serán generados (no tocar)
