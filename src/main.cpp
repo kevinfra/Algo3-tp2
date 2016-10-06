@@ -9,8 +9,8 @@
 #include <chrono>
 #include <random>
 #include <grafos.h>
-#include <grafos2.h>
 #include <ejercicio1.h>
+#include <ejercicio2.h>
 #include <grafos3.h>
 
 
@@ -28,6 +28,7 @@ double stop_timer() {
 }
 
 std::vector< std::vector< char > > cargarMatrizEj1(int c, int f);
+std::vector< std::vector< char > > cargarMatrizEj2(int c, int f);
 
 int main(int argc, char *argv[]) {
 	int numeroDeEjercicio = 0;
@@ -149,126 +150,27 @@ int main(int argc, char *argv[]) {
 	}
 	else if (numeroDeEjercicio == 2) {
 		if (!experimentos && !random) {
-			int f, c;
-			cout << "Ingrese Filas, columnas:" << endl;
-			cin >> f;
-			cin >> c;
-			cout << "Ingresar en las siguientes " << f << " filas los chars '.' para indicar camino," << endl;
-			cout << "'#' para indicar pared indestructuble, un num natural para indicar esfuerzo para romper la pared. El largo de las filas debe ser " << c << endl;
-			int filasReal = f;
-			int columnasReal = c;
-			char matriz[filasReal][columnasReal];
-			char caminoPared;
-			int nodos = 0;
-			bool encerrado = false;
-			bool encerradoRes = false;
-
-			for (int i = 0; i < filasReal; ++i) { //Para este entonces, asumo que aquellas paredes indestructibles, seran pasadas como #.
-				for (int j = 0; j < columnasReal; ++j) {
-						(cin >> caminoPared);
-						matriz[i][j] = caminoPared;
-				}
-			} //La entrada es guardada como una matriz.
-
-			vector<arista> aristas;
-			for (int iFilas = 0; iFilas < filasReal; ++iFilas) {
-				for (int iColumnas = 0; iColumnas < columnasReal; ++iColumnas) {
-					if (matriz[iFilas][iColumnas] == '.') {
-						nodos++; //Chequeo cuantos nodos hay
-						if (matriz[iFilas][iColumnas + 1] != '#') {
-							arista a;
-							a.inicio = iFilas * columnasReal + iColumnas;
-							a.fin = iFilas * columnasReal + iColumnas + 1;
-							a.costo = 0;
-							aristas.push_back(a);
-						}
-
-						if (matriz[iFilas + 1][iColumnas] != '#') {
-							arista a;
-							a.inicio = iFilas * columnasReal + iColumnas;
-							a.fin = (iFilas + 1) * columnasReal + iColumnas;
-							a.costo = 0;
-							aristas.push_back(a);
-						}
-						encerrado = matriz[iFilas][iColumnas + 1] == '#' && matriz[iFilas + 1][iColumnas] == '#' && matriz[iFilas - 1][iColumnas] == '#' && matriz[iFilas][iColumnas - 1] == '#';
-						encerradoRes = encerradoRes || encerrado;
-						//Me fijo si hay algun nodo inalcanzable (en el caso de que haya uno solo se contempla con #nodos).
-					}
-
-					if (esNumero(matriz[iFilas][iColumnas])) {
-						bool puseNumero = false;
-						if (matriz[iFilas][iColumnas + 1] != '#' && !esNumero(matriz[iFilas][iColumnas + 1])) {
-							arista a;
-							a.inicio = iFilas * columnasReal + iColumnas;
-							a.fin = iFilas * columnasReal + iColumnas + 1;
-							a.costo = matriz[iFilas][iColumnas] - '0';
-							aristas.push_back(a);
-							puseNumero = true;
-						} 
-						if (matriz[iFilas + 1][iColumnas] != '#' && !esNumero(matriz[iFilas + 1][iColumnas])) {
-							arista a;
-							a.inicio = iFilas * columnasReal + iColumnas;
-							a.fin = (iFilas + 1) * columnasReal + iColumnas;
-							a.costo = 0;
-							if(!puseNumero)
-								a.costo = matriz[iFilas][iColumnas] - '0';
-							aristas.push_back(a);
-						}
-					}
-				}
-			}
-
-			int res = 0;
-
-			if(nodos == 0 || (nodos > 1 && encerradoRes) ){ //Chequeo que sean todas paredes o haya alguno inalcanzable
-				res = -1;
-				cout << res << endl;
-			}
-			else{
-				int V = f*c; //Kruskal
-				init(V);
-				vector<arista> solucion;
-				sort(aristas.begin(), aristas.end()); // ordeno las aristas por costo de menor a mayor
-
-
-				for (uint i = 0; i < aristas.size(); i++) {
-					arista a = aristas[i];
-					if (find(a.inicio) != find(a.fin)) {
-						solucion.push_back(a);
-						uni(a.inicio, a.fin);
-					}
-				}	//Fin Kruskal
-				
-				for (int i = 0; i < solucion.size(); ++i)
-				{
-					res += solucion[i].costo;
-				}
-
-				cout << res << endl;
-			}
+			cin >> filasReal;
+			cin >> columnasReal;
+			cout << "Ingresar en las siguientes " << filasReal << " filas los chars '.' para indicar camino," << endl;
+			cout << "'#' para indicar pared indestructuble, un num natural para indicar esfuerzo para romper la pared. El largo de las filas debe ser " << columnasReal << endl;
+			vector< vector<char> > matriz = cargarMatrizEj2(columnasReal,filasReal);
+			int res = solveEj2(matriz, filasReal, columnasReal);
+			cout << res << endl;
 		}
-		//TODO: FIXME: ARREGLAR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		else if(experimentos){ //modo de uso: -exp <nombreDeArchivoEntrada >nombreDeArchivoSalida
-			int f = 10;
-			int c = 10;
+			int f;
+			int c;
 			std::vector< std::vector< char > > matriz;
-			for (int veces = 0; veces < 5; ++veces){
-				cout << "----" << endl;
-				cout << "matrices random nro " << veces << endl;
-				cout << "---" << endl;
+			for (int veces = 0; veces < 1000; ++veces){
 				cin >> f;
 				cin >> c;
-				matriz = cargarMatrizEj1(c, f);
-				for (int p = 0; p < 100; ++p){
-					Grafos::ListaAdy grafo(c*f*(p+1));
-					for (int j = 0; j < 100; ++j){
-						int s,t;
-						start_timer();
-						parserEj1(f, c, p, matriz, grafo, s, t);
-						int caminoMinimo = grafo.BFS(s, t, f, c);
-						double tiempo = stop_timer();
-						cout << f << " " << c << " " << p << " " << caminoMinimo << " " << tiempo << endl;
-					}
+				matriz = cargarMatrizEj2(c, f);
+				for (int repes = 0; repes < 50; ++repes){
+					start_timer();
+					int res = solveEj2(matriz, f, c);
+					double tiempo = stop_timer();
+					cout << f << " " << c << " " << res << " " << tiempo << endl;
 				}
 			}
 		}
@@ -276,12 +178,12 @@ int main(int argc, char *argv[]) {
 
 			random_device rd;
 			mt19937 gen(rd());
-			uniform_int_distribution<> tam(1,1000);
+			// uniform_int_distribution<> tam(1,100000);
 			uniform_int_distribution<> caracter4(0,9);
 			uniform_int_distribution<> dame1(0,1);
 			char puntoParedONumero[2][10] = {{'#', '1', '2', '3', '4', '5', '6', '7', '8', '9'},
 																				{'.', '.', '.', '.', '.', '.', '.', '.', '.', '.'}};
-			for (int veces = 1; veces < 101; ++veces){
+			for (int veces = 1; veces < 1001; ++veces){
 				// int f = tam(gen);
 				int f = veces;
 				// int c = tam(gen);
@@ -376,6 +278,21 @@ std::vector< std::vector< char > > cargarMatrizEj1(int c, int f){
     for (int i = 0; i < c; ++i){
       std::cin >> puntoOPared;
       matriz[i][k] = puntoOPared;
+    }
+  }
+  return matriz;
+}
+
+std::vector< std::vector< char > > cargarMatrizEj2(int c, int f){
+	std::vector< std::vector< char > > matriz(f);
+  for (int i = 0; i < f; ++i){
+    matriz[i].resize(c);
+  }
+  char puntoOPared;
+  for (int k = 0; k < f; ++k) {
+  	for (int i = 0; i < c; ++i){
+      std::cin >> puntoOPared;
+      matriz[k][i] = puntoOPared;
     }
   }
   return matriz;
