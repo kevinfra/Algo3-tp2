@@ -6,7 +6,8 @@ import sys
 
 # Antes de usar esto, tirar en consola "./tp1 1 -exp > resEj1.txt". CUIDADO CON PISAR EL ARCHIVO ANTERIOR
 
-arr = np.genfromtxt("resEj2-random.txt")
+# arr = np.genfromtxt("resEj2-random.txt")
+arr = np.genfromtxt("resEj2-fijo.txt")
 x = [row[3] for row in arr] #tiempo en MS
 y = [row[0] for row in arr] #tamMatriz
 
@@ -34,13 +35,15 @@ while k < len(x):
 # np.savetxt("mydata.csv", listaPromedio, fmt='%1u' )
 
 cota = '((x*x)*(np.log10(x*x))*1e3)'
-grafCota = graph(cota, range(1,120))
+grafCota = graph(cota, range(1,200))
 
 
-promedio1NP = np.array(listaPromedio)
-tamanosMatricesNP = np.array(listaPares)
+promedio1NP = np.array(listaPromedio[0:499])
+promedio2NP = np.array(listaPromedio[500:999])
+promedio3NP = np.array(listaPromedio[1000:1499])
+tamanosMatricesNP = np.array(listaPares[0:499])
 
-deAUno = range(1,120)
+deAUno = range(1,200)
 
 deAUno = np.array(deAUno)
 
@@ -50,7 +53,9 @@ deAUno = np.array(deAUno)
 fig = plt.figure()
 fig.patch.set_facecolor('white')
 ax1 = fig.add_subplot(111)
-pylab.plot(tamanosMatricesNP, promedio1NP,'r', label= 'Matriz de tamaño variable')
+pylab.plot(tamanosMatricesNP, promedio1NP,'r', label= 'Muchas paredes destructibles')
+pylab.plot(tamanosMatricesNP, promedio2NP,'g', label= 'Solo paredes indestructibles')
+pylab.plot(tamanosMatricesNP, promedio3NP,'black', label= 'Sin paredes')
 pylab.plot(deAUno, grafCota,'bo', label= 'Cota de Complejidad')
 
 
@@ -63,6 +68,6 @@ ax1.set_ylabel('Tiempo de procesamiento en ns')
 
 leg = ax1.legend()
 
-leg = plt.legend( loc = 'lower right')
+leg = plt.legend( loc = 'upper left')
 
 plt.show()

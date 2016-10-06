@@ -34,6 +34,7 @@ int main(int argc, char *argv[]) {
 	int numeroDeEjercicio = 0;
 	bool experimentos = false;
 	bool random = false;
+	bool fijo = false;
 	if (argc == 2) {
 		numeroDeEjercicio = atoi(argv[1]);
 	}
@@ -45,6 +46,9 @@ int main(int argc, char *argv[]) {
 		}
 		if (exp == "-random"){
 			random = true;
+		}
+		if (exp == "-fijo"){
+			fijo = true;
 		}
 	}
 	else {
@@ -149,7 +153,7 @@ int main(int argc, char *argv[]) {
 		}
 	}
 	else if (numeroDeEjercicio == 2) {
-		if (!experimentos && !random) {
+		if (!experimentos && !random && !fijo) {
 			int filasReal;
 			int columnasReal;
 			cout << "ingresar filas y columnas de la matriz" << endl;
@@ -216,7 +220,64 @@ int main(int argc, char *argv[]) {
 					cout << endl;
 				}
 			}
-
+		}
+		else if (fijo){
+			for (int veces = 1; veces < 501; ++veces){
+				int f = veces;
+				int c = veces;
+				cout << f << " " << c << " " << endl;
+				char matriz[f][c];
+				for (int i = 0; i < f; ++i){
+					for (int k = 0; k < c; ++k){
+						if(i == 0 || k == 0 || i == f-1 || k == c -1) matriz[i][k] = '#';
+						else if(i % 2 == 0 && k % 2 == 0) matriz[i][k] = '#';
+						else if(i % 2 == 0 && k % 2 == 1) matriz[i][k] = k == 1 ? '.' : '3';
+						else if(i % 2 == 1 && k % 2 == 0) matriz[i][k] = '3';
+						else if(i % 2 == 1 && k % 2 == 1) matriz[i][k] = '.';
+					}
+				}
+				for (int i = 0; i < f; ++i){
+					for (int k = 0; k < c; ++k){
+						cout << matriz[i][k];
+					}
+					cout << endl;
+				}
+			}
+			for (int veces = 1; veces < 501; ++veces){
+				int f = veces;
+				int c = veces;
+				cout << f << " " << c << " " << endl;
+				char matriz[f][c];
+				for (int i = 0; i < f; ++i){
+					for (int k = 0; k < c; ++k){
+						if(i == 0 || k == 0 || i == f-1 || k == c -1) matriz[i][k] = '#';
+						else matriz[i][k] = '.';
+					}
+				}
+				for (int i = 0; i < f; ++i){
+					for (int k = 0; k < c; ++k){
+						cout << matriz[i][k];
+					}
+					cout << endl;
+				}
+			}
+			for (int veces = 1; veces < 501; ++veces){
+				int f = veces;
+				int c = veces;
+				cout << f << " " << c << " " << endl;
+				char matriz[f][c];
+				for (int i = 0; i < f; ++i){
+					for (int k = 0; k < c; ++k){
+						matriz[i][k] = '#';
+					}
+				}
+				for (int i = 0; i < f; ++i){
+					for (int k = 0; k < c; ++k){
+						cout << matriz[i][k];
+					}
+					cout << endl;
+				}
+			}
 		}
 	}
 	else if (numeroDeEjercicio == 3) {
