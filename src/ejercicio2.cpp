@@ -12,19 +12,19 @@ int solveEj2(vector< vector< char > > matriz, int filasReal, int columnasReal){
       if (matriz[iFilas][iColumnas] == '.') {
         nodos++; //Chequeo cuantos nodos hay
         if (matriz[iFilas][iColumnas + 1] != '#') {
-          arista a;
-          a.inicio = iFilas * columnasReal + iColumnas;
-          a.fin = iFilas * columnasReal + iColumnas + 1;
-          a.costo = 0;
-          aristas.push_back(a);
+        	arista a;
+        	a.inicio = iFilas * columnasReal + iColumnas;
+        	a.fin = iFilas * columnasReal + iColumnas + 1;
+        	a.costo = 0;
+        	aristas.push_back(a);
         } //La entrada es guardada como una matriz.
 
         if (matriz[iFilas + 1][iColumnas] != '#') {
-          arista a;
-          a.inicio = iFilas * columnasReal + iColumnas;
-          a.fin = (iFilas + 1) * columnasReal + iColumnas;
-          a.costo = 0;
-          aristas.push_back(a);
+        	arista a;
+        	a.inicio = iFilas * columnasReal + iColumnas;
+        	a.fin = (iFilas + 1) * columnasReal + iColumnas;
+        	a.costo = 0;
+        	aristas.push_back(a);
         }
         encerrado = matriz[iFilas][iColumnas + 1] == '#' && matriz[iFilas + 1][iColumnas] == '#' && matriz[iFilas - 1][iColumnas] == '#' && matriz[iFilas][iColumnas - 1] == '#';
         encerradoRes = encerradoRes || encerrado;
@@ -35,21 +35,21 @@ int solveEj2(vector< vector< char > > matriz, int filasReal, int columnasReal){
       if (esNumero(matriz[iFilas][iColumnas])) {
         bool puseNumero = false;
         if (matriz[iFilas][iColumnas + 1] != '#' && !esNumero(matriz[iFilas][iColumnas + 1])) {
-          arista a;
-          a.inicio = iFilas * columnasReal + iColumnas;
-          a.fin = iFilas * columnasReal + iColumnas + 1;
-          a.costo = matriz[iFilas][iColumnas] - '0';
-          aristas.push_back(a);
-          puseNumero = true;
+        	arista a;
+        	a.inicio = iFilas * columnasReal + iColumnas;
+        	a.fin = iFilas * columnasReal + iColumnas + 1;
+        	a.costo = matriz[iFilas][iColumnas] - '0';
+        	aristas.push_back(a);
+        	puseNumero = true;
         } 
         if (matriz[iFilas + 1][iColumnas] != '#' && !esNumero(matriz[iFilas + 1][iColumnas])) {
-          arista a;
-          a.inicio = iFilas * columnasReal + iColumnas;
-          a.fin = (iFilas + 1) * columnasReal + iColumnas;
-          a.costo = 0;
-          if(!puseNumero)
-            a.costo = matriz[iFilas][iColumnas] - '0';
-          aristas.push_back(a);
+        	arista a;
+        	a.inicio = iFilas * columnasReal + iColumnas;
+        	a.fin = (iFilas + 1) * columnasReal + iColumnas;
+        	a.costo = 0;
+        	if(!puseNumero)
+        	  a.costo = matriz[iFilas][iColumnas] - '0';
+        	aristas.push_back(a);
         }
       }
     }

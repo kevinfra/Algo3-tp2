@@ -5,14 +5,14 @@
 	\begin{figure}[ht]
 		\begin{center}
 			\includegraphics[width=0.5\columnwidth]{imagenes/balanza.jpg}
-			\caption{Equilibro}
+			\caption{Romper paredes}
 		\end{center}
 	\end{figure}
 
 	\subsection{Descripción del problema}
 	En su destino hacia la cruz en el mapa recorrieron varias salas distintas. Se dieron cuenta que en cada sala se iban encontrando con un fragmento de una tabla con un mansucrito antiguo. Por lo tanto, antes de continuar, quieren juntarlos todos.\par
 	A medida que se iban abriendo camino se dieron cuenta que ciertas paredes derribables requerían cierto esfuerzo para
-	abrirse. Este esfuerzo será representado por un $n\in{\mathbb{n}}$ donde $n < 10$. Luego, teniendo un mapa de $F*C$ (F = Filas y C = Columnas), donde se indique el $n$ en las paredes derribables, quieren encontrar cual es el mı́nimo esfuerzo que deben hacer para acceder a todas las salas. \par
+	abrirse. Este esfuerzo será representado por un $n\in{\mathbb{N}}$ donde $n < 10$. Luego, teniendo un mapa de $F*C$ (F = Filas y C = Columnas), donde se indique el $n$ en las paredes derribables, quieren encontrar cual es el mı́nimo esfuerzo que deben hacer para acceder a todas las salas. \par
 
 	Por lo tanto, se deberá pasar por parametro al algoritmo, el mapa con sus paredes y el esfuerzo para romperlas. 
 	\newline
@@ -257,7 +257,7 @@
 	\subsection{Complejidad teórica}
 
 	Para calcular la complejidad teórica de la solución propuesta se hará
-	referencia a la sección \ref{ej2_imp} donde se posée el pseudocódigo junto a
+	referencia a la sección \textbf{Implementación} donde se posée el pseudocódigo junto a
 	su explicación.
 
 	El algoritmo tiene una complejidad temporal de $\ord(fc*log(fc))$, siendo f = cantidad de filas y c = cantidad de columnas, del mapa.
@@ -290,14 +290,16 @@
 
 	Es decir, la complejidad final del algoritmo es $\ord(FC*log FC)$.
 
-	\subsection{Complejidad teórica}
+	\subsection{Complejidad espacial}
 	Las distintas estructuras que forman el algoritmo propuesto con sus complejidades espaciales son,
 	\begin{itemize}
 		\item Matriz para almacenar los Char pasados por parametro $\ord(FC)$.
-		\item Vector de aristas, en donde el peor de los casos, el tamaño de vector es $\ord(2FC) = \ord(FC)$.
-		\item Luego el vector solución seguro es menor a $\ord(FC)$
+		\item Vector de aristas, en donde el peor de los casos, el tamaño de vector es $\ord(2FC) = \ord(FC)$, esto significa que el grafo, es denso.
+		\item Para Kruskal se usa la estructura \textbf{DSU}, que en el fondo, lo único que hace es crear árboles de los vértices, por lo tanto, esta estructura es $\ord(FC)$.
+		\item Luego el vector solución seguro es menor a $\ord(2FC)$, pues esa es la cota máxima de aristas que puede tener el grafo.
 	\end{itemize}
 
+	Finalmente la complejidad espacial es $\ord(FC)$.
 
     % 4. Dar un código fuente claro que implemente la solución propuesta. Se deben incluir las partes relevantes del código como apéndice del informe impreso entregado.
 
