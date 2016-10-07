@@ -1,4 +1,13 @@
 \section{Ejercicio 3: Escapando}
+
+  \begin{figure}[H]
+    \begin{center}
+      \includegraphics[width=0.4\columnwidth]{imagenes/tren.jpg}
+      \caption{El tren se va}
+    \end{center}
+  \end{figure}
+
+
     % 1. Describir detalladamente el problema a resolver dando ejemplos del mismo y sus soluciones.
     \subsection{Descripción del problema}
 
@@ -135,7 +144,7 @@
     \subsection{Complejidad teórica}
         Dada la explicación anterior, el algoritmo tiene complejidad temporal de $O((N+M) * \log N)$ donde $N$ es la cantidad de estaciones y $M$ es la cantidad de vías.
         Esto se da debido a que se usa el algoritmo de Dijkstra con una lista de prioridad implementada con un árbol binario.
-        Notar que $O((N+M) * \log N)$ puede ser peor $O(n^{2})$. Conviene usar min heap o un árbol cuando el grafo es esparso, es decir, cuando M << N^{2}.
+        Notar que $O((N+M) * \log N)$ puede ser peor $O(n^{2})$. Conviene usar min heap o un árbol cuando el grafo es esparso, es decir, cuando M es mucho menor que N^{2}.
     
 
     % 4. Dar un código fuente claro que implemente la solución propuesta. Se deben incluir las partes relevantes del código como apéndice del informe impreso entregado.
@@ -144,3 +153,49 @@
     \subsection{Experimentación}
 
         Al igual que con los otros dos ejercicios, se realizaron pruebas experimentales para verificar que el tiempo de ejecución del algoritmo cumpliera con la cota asintótica de $O((N+M) * \log N)$, teóricamente demostrada para el peor caso...
+        \par Se plantearon los siguientes casos relevantes para verificar su funcionamiento:
+        \par - Se corrieron casos aleatorios alterando la cantidad de vértices, aristas y pesos de cada arista.
+
+        En la siguiente figura, se puede observar los resultados de correr la experimentación explicada. Se muestra el tiempo de procesamiento en función de los vértices...
+
+        \begin{figure}[H]
+          \begin{center}
+            \includegraphics[width=0.7\columnwidth]{../exp/ej3casosRandomVertices.png}
+            \caption{}
+          \end{center}
+        \end{figure}
+
+        En la siguiente figura, se puede observar los resultados de correr la experimentación explicada. Se muestra el tiempo de procesamiento en función de las aristas...
+
+        \begin{figure}[H]
+          \begin{center}
+            \includegraphics[width=0.7\columnwidth]{../exp/ej3casosRandomAristas.jpeg}
+            \caption{}
+          \end{center}
+        \end{figure}
+
+        Se puede visualizar que los resultados obtenidos en los experimentos con entradas aleatorias difieren mucho con respecto a la cota de complejidad teórica. Esto se debe a que los casos no fueron suficientemente grandes como para alcanzarla. 
+        También se puede observar en el gráfico que el tiempo de ejecución no depende únicamente de la cantidad de vértices dado que un grafo puede ser muy denso y esto daría al Algoritmo de Disjktra muchas más posibilidades para recorrer que en el caso en el que hayan pocas aristas. Por eso en el gráfico de tiempo en función de aristas se ven los puntos agrupados en una pendiente creciente, y en el gráfico de tiempo en función de vértices puntos más dispersos.
+
+        \par - Se corrieron casos particulares en los que se debería alcanzar la cota de complejidad. Es decir, los peores casos.
+        Para esto, se probó con grafos de n vértices. Para cada vértice i (1 $\leq$ i $<$ n), existe todas las posibles aristas (i, j) tal que j pertenece al intervalo (i, n). Y luego un arista (n-1, n). 
+        De esta manera el algoritmo tendrá que recorrer todos los vértices para obtener el camino mínimo.
+
+        \par - Se corrieron casos particulares en los que la complejidad debería ser la mínima posible, es decir, los mejores casos.
+        Para esto, se probó con grafos en los que únicamente existía un arista que unía el primer vértice con el último.
+
+        En la siguiente figura, se puede observar los resultados de correr la experimentación explicada...
+
+        \begin{figure}[H]
+          \begin{center}
+            \includegraphics[width=0.7\columnwidth]{../exp/ej3tamanosFijos.png}
+            \caption{}
+          \end{center}
+        \end{figure}
+
+        Se puede visualizar para los peores casos una curva creciente que tiende a la cota de complejidad. Esto se debe a que el Algoritmo de Dijkstra recorre todos los caminos posibles para llegar al último vértice.
+        En cambio en el peor caso, como existe una única arista que recorrer, el Algoritmo de Dijkstra encuentra trivialmente el único caso posible. En este caso, lo único que le pesa a la complejidad es la construcción de la lista de adyacencia.
+
+        Cada uno de estos casos consta de entre 500 y 1000 entradas diferentes, y para cada una de esas entradas, se ejecuta el algoritmo 50 veces. En cada una de estas 1000 pruebas se calcula el tiempo promedio (el tiempo de cada ejecución, sobre 50).
+
+        Conclusión: Como se podrá observar realmente el algoritmo para diversos casos cumple la cota dada en la sección de complejidad teórica. También se puede observar que el algoritmo de Dijkstra lo que chequea son las aristas, es decir, la diferencia de la cantidad de aristas es lo que realmente pesa en el tiempo de ejecución para el algoritmo.

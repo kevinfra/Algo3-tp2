@@ -409,7 +409,7 @@ int main(int argc, char *argv[]) {
 				int m = 0;
 				for (int i = 1; i < n; ++i)
 				{
-					for (int j = i+1; j <= n; ++j)
+					for (int j = i+1; j < n; ++j)
 					{
 						ABC viaCompleta;
 						get<0>(viaCompleta) = i;
@@ -419,6 +419,12 @@ int main(int argc, char *argv[]) {
 						m++;
 					}
 				}
+				ABC viaCompletaUlt;
+				get<0>(viaCompletaUlt) = n - 1;
+				get<1>(viaCompletaUlt) = n;
+				get<2>(viaCompletaUlt) = 10;
+				vias.push_back(viaCompletaUlt);
+				m++;
 
 				cout << n << " " << m << " " << endl;
 				for (uint i = 0; i < vias.size(); ++i)
