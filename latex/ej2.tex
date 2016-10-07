@@ -269,18 +269,34 @@
 	 \item El armado de la matriz principal de Chars, es un ciclo que recorre una vez, cada posición del mapa y guarda el Char en una matriz de F*C. Esto es $\ord(FC)$
 	 \item Luego para armar cada una de las aristas, vuelve a recorrer la matriz de Char, y crea las aristas. Recorrer nuevamente la matriz es $\ord(FC)$, mientras que crear la arista e insertarla en el vector es $\ord(1)$. Luego este ciclo es $\ord(FC) * \ord(1) = \ord(FC)$.
 	 \item Chequear que haya solución, es hacer comparaciones booleanas en $\ord(1)$.
-	 \item Luego Kruskal, dado que usamos una estructura DSU, la complejidad resultante es $\ord(V + E*log V )$, siendo E la cantidad de aristas y V las de vértices. Como en el peor de los casos cada posición del mapa es un nodo, entonces $\ord(V) = \ord(FC)$, entonces $\ord(V + E log V ) = \ord(FC + E*log FC)$. Pero en el peor de los casos, cada vértice esta conectado a sus 4 vecinos dentro de la matriz. Esto es, que en el peor de los casos, cada vértice tiene 4 aristas. O sea $\ord(E) = \ord(4FC)$. Luego $\ord(V + E log V ) = \ord(FC + 4FC*log FC)$.
-	 \item Recorrer el vector solución, en el peor caso, tiene todas las aristas, es decir, $\ord(4FC) = \ord(FC)$.
+	 \item Luego Kruskal, dado que usamos una estructura DSU, la complejidad resultante es $\ord(V + E*log V )$, siendo E la cantidad de aristas y V las de vértices. Como en el peor de los casos cada posición del mapa es un nodo, entonces $\ord(V) = \ord(FC)$, entonces $\ord(V + E log V ) = \ord(FC + E*log FC)$. Pero en el peor de los casos, cada vértice esta conectado a sus 4 vecinos dentro de la matriz. Esto es, que en el peor de los casos, cada vértice tiene 4 aristas.
+
+	 	\[
+		4V >= \sum_{veV}^{}d(v) = 2E
+		\]
+
+	  Luego $2V >= E$, o sea. $E = \ord(2V)$. Como $\ord(2V) = \ord(2FC)$, entonces
+	  $\ord(E) = \ord(2FC)$
+	  Luego $\ord(V + E log V ) = \ord(FC + FC*log FC)$.
+	 \item Recorrer el vector solución, en el peor caso, tiene todas las aristas, es decir, $\ord(2FC) = \ord(FC)$.
 
 	\end{itemize}
 
 	Finalmente, hacer dos ciclos en la misma matriz y luego hacer Kruskal y finalmente recorrer el vector solución de aristas, implica que el algoritmo tiene complejidad\par
 
-	$\ord(FC + FC + 1 + FC + 4FC*log FC) =$
+	$\ord(FC + FC + 1 + FC + 2FC*log FC) =$
 	$\ord(FC + FC*log FC) =$
 	$\ord(FC*log FC)$
 
 	Es decir, la complejidad final del algoritmo es $\ord(FC*log FC)$.
+
+	\subsection{Complejidad teórica}
+	Las distintas estructuras que forman el algoritmo propuesto con sus complejidades espaciales son,
+	\begin{itemize}
+		\item Matriz para almacenar los Char pasados por parametro $\ord(FC)$.
+		\item Vector de aristas, en donde el peor de los casos, el tamaño de vector es $\ord(2FC) = \ord(FC)$.
+		\item Luego el vector solución seguro es menor a $\ord(FC)$
+	\end{itemize}
 
 
     % 4. Dar un código fuente claro que implemente la solución propuesta. Se deben incluir las partes relevantes del código como apéndice del informe impreso entregado.
@@ -288,53 +304,42 @@
     \subsection{Experimentacion}
          
 
-	Se realizaron pruebas experimentales para verificar que el tiempo de
-	ejecución del algoritmo cumpliera con la cota asintótica de $\ord(log(n))$,
-	demostrada teóricamente. Para ello fue necesario modificar el algoritmo propuesto, ya que como la complejidad está definida por la cantidad de símbolos necesarios para la representación del número en base 3 y se explicó que la misma era $log_3$ del número más uno, no se observan grandes diferencias en el tiempo de ejecución para números 'razonables', es decir números que puedan ser representados de una forma práctica y eficiente en C++. Por ejemplo para el caso de un número muy grande como $3^{30}$, la cantidad de iteraciones que va a realizar el ciclo es sólo 31, que no es muy diferente a la cantidad de iteraciones necesarias para el número $3^{3}$ (4 iteraciones) que es mucho menor. Los tiempos de ejecución de estas instancias son muy similares y dado a que hay muchas variables en cuestión cuando se corren (otros procesos que interfieren, atención de interrupciones y scheduling del S.O, etc) puede hasta darse el caso de que tarde más una instancia menor que una mayor. Se presenta la siguiente modificación del algoritmo para realizar las pruebas:
+    Ya explicada las complejidad e implementación, se pasará a hacer pruebas experimentales para verificar que el tiempo de ejecución en el peor caso, tiende a $\ord(FC*log(FC))$, la complejidad teórica demostrada en la sección anterior, siendo F las filas del mapa y C sus columnas, o visto de otra manera, FC, son en el peor caso, todos los nodos del grafo. Dado que la complejidad depende directamente del tamaño del mapa, se generaros distintas experimentaciones. Por un lado se experimentó, con casos de mapas particulares de distintos tamaños, y conocidos. Mientras que por otro lado, se hizo lo mismo pero con casos random. Luego se midieron los tiempos de procesamiento en ns, y se comparó con relación al tamaño del mapa, pasado como parámetro de entrada. Para los casos random se usó la librería Random de \textbf{STL}, con distribución uniforme. \par
 
-	\begin{codesnippet}
-	\begin{verbatim}
-	izquierda = verdadero
-	divisiones = 0
-	izquierdas = []
-	derechas = []
-	Mientras v.size != 0
-	    Si v[size -1] = 0
-	      Si no lo puse en izquierda al anterior
-	        Agrego a izquierdas la pesa con valor (3 ^ divisiones)
-	      izquierda = verdadero
-	    Si v[size -1] = 1
-	      Si anterior lo puse en izquierda
-	        Agrego a izquierdas la pesa con valor (3 ^ divisiones)
-	      Si no
-	        Agrego a derechas la pesa con valor (3 ^ divisiones)
-	    Si v[size -1] = 2
-	      Si anterio lo puse en izquierda
-	        Agrego a derechas la pesa con valor (3 ^ divisiones)
-	      izquierda = falso
-	    v.size -= 1
-	    divisiones += 1
-	Fin Mientras
-	Si el último no lo puse en la izquierda
-	   Agrego a izquierdas la pesa con valor (3 ^ divisiones)
-	\end{verbatim}
-	\end{codesnippet}
+    \subsubsection{Casos Fijos}
 
-	Este algoritmo a diferencia del original, recibe como parámetros un arreglo de enteros (v) que representa el desarrollo en base 3 de un número y un entero que es el tamaño del arreglo. El arreglo de enteros puede contener por lo tanto en cada posición un entero entre 0 y 2 inclusive. El arreglo se interpreta como que en la posición 0 está el dígito más significativo y en la última el menos significativo.
-	Con esta idea se puede realizar un mejor análisis del rendimiento del algoritmo ya que se pueden simular números mucho más grandes. Se puede tomar un arreglo de 5000 posiciones, lo cual representaría un número muy grande en base 3 que no se puede representar directamente. La idea es que este algoritmo realiza en el fondo lo mismo que el anterior, ya que lo que se hace es recorrer el arreglo (ciclo principal) y después tomar las mismas decisiones que en el original en base a los valores contenidos en cada posición del arreglo. Es decir lo que determina la complejidad en este caso es el tamaño del arreglo, pero el mismo por lo expuesto anteriormente es igual al logaritmo en base 3 de un número P cualquiera, el cual sería el resultante de realizar la descomposición del desarrollo.
+    Para casos fijos, se buscó simular el peor, mejor y caso promedio. Para esto, se generaron tres tipos de mapa de prueba. Luego, por cada tipo de mapa, se generó 500 matrices (o mapas) de distinto tamaño, de 1x1 hasta 500x500. Luego para cada caso se corrió por cada tamaño de mapa, 50 veces el algoritmo, y se sacó un promedio del tiempo. Los tipos de mapas son los siguientes
 
-	Para las pruebas lo que se realizó es probar con arreglos de tamaño 1 hasta 4600. Para estandarizar y que no haya constantes diferentes para cada arreglo (ya que lo que se hace depende del valor de cada posición) en todos los casos se completaron todas las posiciones de los arreglos con el valor 1, para que el tiempo esté determinado sólo por el tamaño del arreglo. Además cada uno de los arreglos es testeado 5000 veces para disminuir los outliers. Lo esperable es que haya una relación lineal entre el tiempo de corrida y el tamaño del arreglo, pero el mismo se debe interpretar como que la relación es logarítmica entre el número que representa el arreglo y el tiempo.Se utilizó para que esto se visualice mejor la escala logarítica, como se puede observar en el siguiente gráfico:  
+    \begin{itemize}
+    	\item Mapa donde hay algunas paredes indestructibles, otras que sí son posibles de destruir y por último algunos sectores accesibles con un “.”.
+    	\item Mapa donde todas sus paredes son indestructibles.
+    	\item Mapa donde son todos “.”.
+    \end{itemize}
 
 
-    \renewcommand\constante{5}
+    Cabe destacar, que, en el caso donde todas las paredes son indestructibles, dado que el algoritmo genera aristas entre nodos destructibles o “.”, para este caso la cantidad de nodos es nula. Por lo tanto, la única complejidad que pesa para este caso, es la de recorrer el mapa y generar una matriz, es decir $\ord{FC}$. Y luego volver a recorrer esta matriz, para crear aristas. Pero como ninguna arista es creada, Kruskal no se ejecuta y el resultado es devuelto. Luego, a este caso lo denominaremos el mejor caso. \par
+    Por otro lado, el caso donde dentro del mapa, algunas paredes son destructibles  y otras no, vendría a ser nuestro caso promedio, pues el algoritmo debe correr Kruskal para ciertos nodos. Por último, nuestro peor caso, es donde no hay paredes destructibles e indestructibles (sin contar los bordes). Pues para este caso, se creará un nodo por “.”, y una arista por cada par de “.”. Es decir, para este caso, el grafo generado sería el mas denso. Luego el algoritmo de Kruskal, será quien tenga que ordenar una mayor cantidad de aristas y correr con estas. \par
 
-	\begin{figure}[H]
+    En la siguiente figura, se puede observar los resultados de correr la experimentación explicada,
+
+    \begin{figure}[H]
       \begin{center}
-        \includegraphics[width=0.7\columnwidth]{imagenes/ejercicio2.jpg}
+        \includegraphics[width=0.7\columnwidth]{../exp/ej2casosFijos.jpeg}
         \caption{}
       \end{center}
-  \end{figure}
+  	\end{figure}
 
-El análisis expuesto de los datos recopilados presenta evidencia empírica sobre la cota de complejidad
-demostrada teóricamente. Además se logra ver que la complejidad depende estrictamente de la cantidad
-de símbolos que hay que utilizar para el desarrollo del número en base 3.
+  	Luego, se puede observar, que el algoritmo cumple con la complejidad $\ord(FC*log(FC))$. Por otro lado se pueden observar los 3 casos mencionados. Donde el caso en donde no debe generar aristas, ni encontrar el \textbf{AGM}, es aquel con menor complejidad. Por otro lado, el caso donde ciertas paredes son destructibles y otras no, tiene cierta varianza en cuanto a su tiempo de ejecución. Esto se debe a que hay ciertos casos en donde la cantidad de paredes indestructibles, son casi nulas, y por esto tiende a parecerse al mejor caso, donde no hay paredes indestructibles. Finalmente, el peor caso, es decir, aquél que mayor cantidad de aristas debe generar, es aquel donde su ejecución fue más lenta. Esto se debe por sobre todas las cosas, a Kruskal. Pues en este caso, se genera un grafo denso, o sea, la cantidad de aristas a ordenar, como así también encontrar el \textbf{AGM}, se vuelve más complejo.
+
+    \subsubsection{Casos Random}
+
+    Al igual que la experimentación con casos fijos, para la siguiente experimentación, se buscó generar mapas random, de tamaños entre 1x1 a 500x500. Por cada tamaño de mapa se corrió 50 veces el algoritmo, finalmente se sacó un promedio y los resultados fueron los siguientes,
+    
+    \begin{figure}[H]
+      \begin{center}
+        \includegraphics[width=0.7\columnwidth]{../exp/ej2casosRandom.jpeg}
+        \caption{}
+      \end{center}
+  	\end{figure}
+
+   Al igual que en el experimento anterior, existen ciertos casos que pueden volver el algoritmo más lento con respecto a otros casos, dado a que es muy diferente el caso donde no hay caminos accesibles con “.”, y donde son todos “.”. Pues mientras el primero no contiene aristas, del segundo, se genera un grafo denso. Es por esto que en ciertos valores del gráfico, se notan ciertos crecimientos del gráfico. De este último experimento, se puede verificar que la cota asintótica es efectivamente $\ord(FC*log(FC))$, de hecho el gráfico muestra que el tiempo de ejecución es menor a la cota de complejidad $\ord(FC*log(FC))$.
