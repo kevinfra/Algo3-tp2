@@ -2,11 +2,8 @@
     % 1. Describir detalladamente el problema a resolver dando ejemplos del mismo y sus soluciones.
     \subsection{Descripción del problema}
 
-        \par Luego de colectar todas las piezas Indy se encuentra conforme con lo obtenido, aunque todavía no
-        comprende lo que dice, el material encontrado lo ayudará a conseguir subsidios para continuar con la
-        investigación.
-        \par Ya se encuentran en el lugar donde estaba la cruz en el mapa, hay unos carritos sobre vias que parecen dirigirse hacia afuera de la fortaleza. De repente se escuchan unos ruidos muy fuertes desde adentro del laberinto. Luego de romper todas las paredes internas buscando las partes de la tabla se dieron cuenta que se esta desplomando toda la estructura, por lo que deben hacer un escape rápido. \par Al lado del carrito se encuentra un gráfico con la red de las vias. Hay puntos numerados que parecen indicar lugares donde los carritos pueden hacer paradas (estaciones). La estación 1 es donde se encuentran, y la última estación es donde quieren llegar. Las estaciones estan unidas con vías. Al lado de cada vía
-        hay flechas con un número indicando el tiempo que tarda en moverse entre dos estaciones.
+        \par Luego de colectar todas las piezas Indy se encuentra conforme con lo obtenido, aunque todavía no comprende lo que dice, el material encontrado lo ayudará a conseguir subsidios para continuar con la investigación.
+        \par Ya se encuentran en el lugar donde estaba la cruz en el mapa, hay unos carritos sobre vias que parecen dirigirse hacia afuera de la fortaleza. De repente se escuchan unos ruidos muy fuertes desde adentro del laberinto. Luego de romper todas las paredes internas buscando las partes de la tabla se dieron cuenta que se esta desplomando toda la estructura, por lo que deben hacer un escape rápido. \par Al lado del carrito se encuentra un gráfico con la red de las vias. Hay puntos numerados que parecen indicar lugares donde los carritos pueden hacer paradas (estaciones). La estación 1 es donde se encuentran, y la última estación es donde quieren llegar. Las estaciones estan unidas con vías. Al lado de cada vía hay flechas con un número indicando el tiempo que tarda en moverse entre dos estaciones.
         \par Ayudemos a escapar cuanto antes a todos antes de que mueran aplastados.
         \\~\\
         \textbf{En resumen...}
@@ -31,33 +28,55 @@
         
         \textbf{Ejemplos:}
         
+        1)
         Una posible entrada válida sería:
         
         \begin{verbatim}
-        N = 5
-        M = 5
-        
-        A B C 
-        1 2 1
-        2 3 4
-        3 4 5
-        4 5 3
-        2 4 2
+        N = 5   M = 5
+        [A B C] = { 1 2 1, 2 3 4, 3 4 5, 4 5 3, 2 4 2 }
         \end{verbatim}
 
         Y su salida válida sería:
 
         \begin{verbatim}
-        T = 6
-        S = 4
-        E = 1 2 4 5
+        T = 6   S = 4
+        E = { 1 2 4 5 }
+        \end{verbatim}
+
+        2)
+        Otra posible entrada válida sería:
+        
+        \begin{verbatim}
+        N = 6   M = 9
+        [A B C] = { 1 2 8, 1 3 4, 2 4 2, 2 5 1, 3 5 1, 4 5 1, 5 4 10, 4 6 1, 5 6 7 }
+        \end{verbatim}
+
+        Y su salida válida sería:
+
+        \begin{verbatim}
+        T = 11  S = 4
+        E = { 1 2 4 6 }
+        \end{verbatim}
+
+        3)
+        Otra posible entrada válida sería:
+        
+        \begin{verbatim}
+        N = 3   M = 2
+        [A B C] = { 1 2 1, 2 1 1 }
+        \end{verbatim}
+
+        Y su salida válida sería:
+
+        \begin{verbatim}
+        T = -1
         \end{verbatim}
 
 
     % 2. Explicar de forma clara, sencilla, estructurada y concisa, las ideas desarrolladas para la resolución del problema. Utilizar pseudocódigo y lenguaje coloquial (no código fuente). Justificar por qué el procedimiento resuelve efectivamente el problema.
     \subsection{Solución propuesta}
     
-     \par Como solución decidimos modelar el problema en un grafo y usar el \emph{Algoritmo de Dijkstra} para obtener el camino mínimo de manera tal que no supere la complejidad pedida.
+    \par Como solución decidimos modelar el problema en un grafo y usar el \emph{Algoritmo de Dijkstra} para obtener el camino mínimo de manera tal que no supere la complejidad pedida.
 
     \par Las estaciones y los recorridos serán modelados en un grafo en el cual los vértices representarán a las estaciones, las aristas representarán a las vías, y el peso de cada arista representará al tiempo que se tarda en llegar de una estación a la otra.
     \par Este grafo será implementado con una lista de adyacencia. Es decir, una lista de N posiciones, siendo N la cantidad de estaciones. Cada posición i tendrá una lista con las estaciones vecinas alcanzables desde la estación i. Cada estación vecina j será una tupla de dos valores: el número de la estación j y el tiempo que se tarda en llegar desde la estación i a la estación j.
@@ -108,10 +127,15 @@
     
     \par  Para este caso en particular, el algoritmo usará un árbol binario para almacenar los nodos no visitados. De esta manera, se podrá extraer el nodo más cercano al origen y actualizar la prioridad de un nodo cuando se encuentre una distancia menor en complejidad logarítmica.
     \par Para que la función devuelva lo pedido, se obtiene el tiempo mínimo que se tarda en llegar de la estación inicial a la estación final con el valor de la última posición de la lista \emph{time}. Y por otro lado, a partir de la lista \emph{antecesores} se obtiene el recorrido más rápido, con sus estaciones.
+
+    \par El problema planteado se puede visualizar como un contexto en el cual se tiene un grafo con varios vértices (estaciones), con distintas aristas (vías), cada una con su peso (tiempo en llegar de una estación a la otra). Y a partir de este grafo, se desea obtener el camino mínimo desde el primer nodo hasta el último.
+    \par Según los algoritmos vistos en la cátedra, la mejor solución para este tipo de problemas es aplicar a ese grafo el \emph{Algoritmo de Dijkstra}, el cual resuelve eficientemente el camino con menos peso para llegar de cierto nodo inicial a cierto nodo final.
+    \par Dado este análisis del problema, se llega la conclusión de que el procedimiento desarrollado es una solución eficiente que lo resuelve.
    
     \subsection{Complejidad teórica}
         Dada la explicación anterior, el algoritmo tiene complejidad temporal de $O((N+M) * \log N)$ donde $N$ es la cantidad de estaciones y $M$ es la cantidad de vías.
         Esto se da debido a que se usa el algoritmo de Dijkstra con una lista de prioridad implementada con un árbol binario.
+        Notar que $O((N+M) * \log N)$ puede ser peor $O(n^{2})$. Conviene usar min heap o un árbol cuando el grafo es esparso, es decir, cuando M << N^{2}.
     
 
     % 4. Dar un código fuente claro que implemente la solución propuesta. Se deben incluir las partes relevantes del código como apéndice del informe impreso entregado.

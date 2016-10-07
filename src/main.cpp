@@ -52,14 +52,14 @@ int main(int argc, char *argv[]) {
 		}
 	}
 	else {
-		cout << "Modo de uso: \n tp2 numeroDeEjercicio \n Opcional luego del numero de ejercicio: " << endl;
+		cout << "Modo de uso: \n tp2 númeroDeEjercicio \n Opcional luego del número de ejercicio: " << endl;
 		cout << "   -exp para experimentos" << endl;
 		return -1;
 	}
 
 
-	if (!(experimentos || random))
-		cout << "Corriendo ejercicio numero " << numeroDeEjercicio << endl;
+	if (!(experimentos || random || fijo))
+		cout << "Corriendo ejercicio número " << numeroDeEjercicio << endl;
 
 	if (numeroDeEjercicio == 1) {
 		if (!experimentos && !random) {
@@ -282,7 +282,7 @@ int main(int argc, char *argv[]) {
 	}
 	else if (numeroDeEjercicio == 3) {
 
-		if (!experimentos) {
+		if (!experimentos && !random && !fijo) {
 			int n, m;
 			cout << "Ingrese estaciones y vias..." << endl;
 			cin >> n >> m;
@@ -302,9 +302,10 @@ int main(int argc, char *argv[]) {
 				get<2>(viaCompleta) = viaC;
 				vias.push_back(viaCompleta);
 			}
-			 	
+
 			grafos3::ListAdy listAdy3(n, m, vias);
 			grafos3::salida salida3 = listAdy3.dijkstra();
+
 			cout << "Mínimo tiempo: " << endl;
 			cout << salida3.T << endl;
 
@@ -320,12 +321,115 @@ int main(int argc, char *argv[]) {
 			 	cout << endl;
 			}
 		}
-		else {
+		else if (experimentos) {
+			int n;
+			int m;
+			vector<ABC> vias;
+			for (int veces = 1; veces <= 1000; ++veces){
+				vias.clear();
+				cin >> n >> m;
+				for (int via = 0; via < m; ++via)
+				{
+					ABC viaCompleta;
+					cin >> get<0>(viaCompleta) >> get<1>(viaCompleta) >> get<2>(viaCompleta);
+					vias.push_back(viaCompleta);
+				}
 
+				for (int repes = 0; repes < 50; ++repes){
+					start_timer();
+					grafos3::ListAdy listAdy3(n, m, vias);
+					grafos3::salida salida3 = listAdy3.dijkstra();
+					double tiempo = stop_timer();
+					cout << n << " " << m << " " << tiempo << endl;
+				}
+			}
+		}
+		else if (random) {
+			random_device rd;
+			mt19937 gen(rd());
+			uniform_int_distribution<> rndEstaciones(2, 50);
+			uniform_int_distribution<> rndTiempo(1,50);
+			vector<ABC> vias;
+
+			for (int veces = 1; veces <= 1000; ++veces){
+				vias.clear();
+
+				int e = rndEstaciones(gen);
+				uniform_int_distribution<> rndVias(1,(e*(e-1) / 2));
+				int v = rndVias(gen);
+
+				uniform_int_distribution<> rndVia1(1,e-1);
+				uniform_int_distribution<> rndVia2(1,e);
+				cout << e << " " << v << endl;
+				int iReco = 1;
+				while (iReco <= v)
+				{
+					ABC viaCompleta;
+					get<0>(viaCompleta) = rndVia1(gen);
+					get<1>(viaCompleta) = get<0>(viaCompleta);
+					while (get<1>(viaCompleta) == get<0>(viaCompleta))
+					{
+						get<1>(viaCompleta) = rndVia2(gen);
+					}
+					get<2>(viaCompleta) = rndTiempo(gen);
+					
+					bool existe = false;
+					for (uint i = 0; i < vias.size() && !existe; ++i)
+					{
+						if (get<0>(vias[i]) == get<0>(viaCompleta) && get<1>(vias[i]) == get<1>(viaCompleta))
+							existe = true;
+					}
+					if (!existe) {
+						vias.push_back(viaCompleta);
+						cout << get<0>(viaCompleta) << " " << get<1>(viaCompleta) << " " << get<2>(viaCompleta) << endl;
+						iReco++;
+					}
+				}
+			}
+		}
+		else if (fijo) {
+			//Mejor caso
+			for (int veces = 1; veces <= 500; ++veces) {
+				int n = veces + 1;
+				int m = 1;
+				cout << n << " " << m << " " << endl;
+				
+				ABC viaCompleta;
+				get<0>(viaCompleta) = 1;
+				get<1>(viaCompleta) = n;
+				get<2>(viaCompleta) = 1;
+				cout << get<0>(viaCompleta) << " " << get<1>(viaCompleta) << " " << get<2>(viaCompleta) << endl;
+			}
+
+			//Peor caso
+			vector<ABC> vias;
+			for (int veces = 1; veces <= 500; ++veces) {
+				vias.clear();
+				int n = veces + 1;
+				int m = 0;
+				for (int i = 1; i < n; ++i)
+				{
+					for (int j = i+1; j <= n; ++j)
+					{
+						ABC viaCompleta;
+						get<0>(viaCompleta) = i;
+						get<1>(viaCompleta) = j;
+						get<2>(viaCompleta) = 10;	
+						vias.push_back(viaCompleta);
+						m++;
+					}
+				}
+
+				cout << n << " " << m << " " << endl;
+				for (uint i = 0; i < vias.size(); ++i)
+				{
+					cout << get<0>(vias[i]) << " " << get<1>(vias[i]) << " " << get<2>(vias[i]) << endl;
+				}
+			}
 		}
 	}
 	else {
-		cout << "numero de ejercicio no valido!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << endl;
+		cout << "número de ejercicio no válido!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << endl;
 		return -1;
 	}
 	return 0;
